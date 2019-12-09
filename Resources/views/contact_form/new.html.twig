@@ -1,0 +1,14 @@
+{% extends '@AkyosCore/layout.html.twig' %}
+
+{% block title %}Ajouter vos articles{% endblock %}
+
+{% block page_content %}
+    <div class="aky-header-page">
+        <h1 class="aky-header-page__title">Créer un(e) {{ title }}</h1>
+        <a class="btn btn-outline-dark" href="{{ path(route~'_index') }}">Retour à la liste</a>
+    </div>
+
+    <div class="content">
+        {{ include('@AkyosForm/contact_form/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
+{% endblock %}

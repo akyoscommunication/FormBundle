@@ -1,0 +1,14 @@
+<div class="col-md-4 aky-use-field-container pb-5">
+    <h4>Champs disponibles</h4>
+    <ul class="list-unstyled">
+        {% for field in el.contactFormFields if el.contactFormFields is not empty %}
+            <li class="aky-use-field {{ '['~field.slug~']' in form.vars.value.Mail ? '' : 'font-weight-bold' }}">[{{ field.slug }}]</li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="col-md-8">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-outline-success">{{ button_label|default('Enregistrer') }}</button>
+    {{ form_end(form) }}
+</div>

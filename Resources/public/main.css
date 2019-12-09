@@ -1,0 +1,50 @@
+/** Import theme styles */
+
+/*******************************************************************************************/
+
+.contact-form-previsualisation .ui-sortable-helper {
+  background-color: transparent !important;
+  border: none;
+}
+
+.contact-form-previsualisation .ui-sortable-helper > .contact-form-previsualisation-col {
+  background-color: #041D53;
+}
+
+.contact-form-previsualisation .ui-sortable-helper > .contact-form-previsualisation-col .contact-form-previsualisation-col__title,
+.contact-form-previsualisation .ui-sortable-helper > .contact-form-previsualisation-col .contact-form-previsualisation-col__type {
+  color: white;
+}
+
+.contact-form-previsualisation .ui-sortable-helper > .contact-form-previsualisation-col .btn-modal-contactformfield {
+  color: #041D53;
+  background-color: white;
+}
+
+.contact-form-previsualisation-col {
+  background-color: #F3F3F3;
+  margin-bottom: 1.3rem;
+  padding: 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-radius: 4px;
+}
+
+.contact-form-previsualisation-col__title {
+  font-weight: bold;
+  font-size: .75rem;
+  font-family: Montserrat, sans-serif;
+}
+
+.contact-form-previsualisation-col__type {
+  font-size: .65rem;
+  font-weight: normal;
+  text-transform: uppercase;
+}

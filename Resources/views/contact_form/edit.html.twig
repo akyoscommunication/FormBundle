@@ -1,0 +1,93 @@
+{% extends '@AkyosCore/layout.html.twig' %}
+
+{% block title %}Editer vos {{ title }}{% endblock %}
+
+{% block page_content %}
+    <div class="aky-header-page">
+        <h1 class="aky-header-page__title">Éditer {{ title }}</h1>
+        <a class="btn btn-outline-dark" href="{{ path(route~'_index') }}">Retour à la liste</a>
+    </div>
+
+    <div class="content">
+        <ul class="nav nav-tabs" id="tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">Structure des champs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="options-tab" data-toggle="tab" href="#mail" role="tab" aria-controls="mail" aria-selected="true">Mail</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="options-tab" data-toggle="tab" href="#options" role="tab" aria-controls="options" aria-selected="true">Options</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="tabsContent">
+            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                <section class="pb-5">
+                    <h2>Ajouter un champ</h2>
+                    {{ form_start(formContactFormField, { 'attr' : { 'class' : 'form-inline not-submit'}}) }}
+                        {{ form_widget(formContactFormField.title, { 'attr' : { 'placeholder' : 'Titre'}}) }}
+                        {{ form_widget(formContactFormField.position, { 'attr' : { 'placeholder' : 'position'}}) }}
+                        {{ form_widget(formContactFormField.type, { 'attr' : { 'placeholder' : 'Type'}}) }}
+                        {{ form_widget(formContactFormField.col, { 'attr' : { 'placeholder' : 'Nombre de colonne'}}) }}
+                        <button class="btn btn-outline-success">{{ button_label|default('Enregistrer') }}</button>
+                    {{ form_end(formContactFormField) }}
+                </section>
+                <section class="pb-5">
+                    <h2>Prévisualisation</h2>
+                    <div class="row contact-form-previsualisation" id="sortableFormFields">
+                        {% for field in el.contactFormFields if el.contactFormFields is not empty %}
+                            <div class="col-md-{{ field.col }} contact-form-previsualisation-sortable">
+                                <div class="contact-form-previsualisation-col" data-form="{{ el.id }}" data-id="{{ field.id }}">
+                                    <h3 class="contact-form-previsualisation-col__title">{{ field.title }} : <span class="contact-form-previsualisation-col__type">{{ field.type }} ~ col.{{ field.col }}</span></h3>
+                                    <div class="contact-form-previsualisation-col__position">Position : <span class="position">{{ field.position }}</span></div>
+                                    <button type="button" class="btn btn-primary btn-modal-contactformfield" data-toggle="modal" data-target="#modal">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modallabel">Modifier</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="modalEditContactFormField">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+{#                    {{ render(controller(#}
+{#                        'Akyos\\FormBundle\\Controller\\ContactFormFieldController::renderContactForm',#}
+{#                        { 'idForm': el.id }#}
+{#                    )) }}#}
+                </section>
+            </div>
+            <div class="tab-pane fade" id="mail" role="tabpanel" aria-labelledby="mail-tab">
+                <div class="row">
+                    {{ include('@AkyosForm/contact_form/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="options" role="tabpanel" aria-labelledby="options-tab">
+                    {{ include('@AkyosCore/crud/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+ {% block stylesheets %}
+     {{ parent() }}
+     <link rel="stylesheet" href="{{ asset('bundles/akyosform/main.css') }}">
+ {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/akyosform/main.js') }}" async defer></script>
+{% endblock %}

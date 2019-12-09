@@ -1,0 +1,12 @@
+{% form_theme form_email '@AkyosForm/templates/form.html.twig' %}
+
+<div class="aky-contact-form">
+    {{ form_start(form_email) }}
+    {{ form_widget(form_email, { 'attr' : { 'class' : 'row'}}) }}
+    <div class="form-submit-container">
+        <div class="form-submit">
+            <button class="btn form-submit__link">{{ button_label|default('Envoyer') }}</button>
+        </div>
+    </div>
+    {{ form_end(form_email) }}
+</div>
