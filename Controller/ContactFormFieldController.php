@@ -53,10 +53,13 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, ContactFormRepository $contactFormRepository, Request $request, \Swift_Mailer $mailer)
+    public function renderContactForm($idForm, $dynamicValues = [], ContactFormRepository $contactFormRepository, Request $request, \Swift_Mailer $mailer)
     {
         $contactform = $contactFormRepository->find($idForm);
-        $form_email = $this->createForm(ContactFormFieldType::class, null, array('fields' => $contactform->getContactFormFields()));
+        $form_email = $this->createForm(ContactFormFieldType::class, null, array(
+            'fields' => $contactform->getContactFormFields(),
+            'dynamicValues' => $dynamicValues
+        ));
 
         $form_email->handleRequest($request);
 

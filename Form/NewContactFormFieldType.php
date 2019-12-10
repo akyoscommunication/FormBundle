@@ -29,7 +29,8 @@ class NewContactFormFieldType extends AbstractType
                     'Lien interne' => 'pagelink',
                     'Lien externe' => 'link',
                     'Téléphone' => 'tel',
-                    'Email' => 'mail'
+                    'Email' => 'mail',
+                    'Hidden' => 'hidden'
                 ),
                 'label' => 'Type du champ',
             ])

@@ -7,6 +7,7 @@ use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -16,10 +17,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ContactFormFieldType extends AbstractType
 {
     protected $fields;
+    protected $dynamicValues;
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->fields = $options['fields'];
+        $this->dynamicValues = $options['dynamicValues'];
+
         foreach ($this->fields as $key => $field) {
             switch ($field->getType()) {
 
@@ -29,6 +33,7 @@ class ContactFormFieldType extends AbstractType
                             'attr'              => array(
                                 'placeholder'       => $field->getTitle(),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
+                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'required'    => false,
                             'config'      => array(
@@ -50,6 +55,7 @@ class ContactFormFieldType extends AbstractType
                             'attr'              => array(
                                 'placeholder'       => "Numéro",
                                 'row_attr'    => 'col-md-'.$field->getCol(),
+                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
@@ -64,6 +70,7 @@ class ContactFormFieldType extends AbstractType
                             'attr'              => array(
                                 'placeholder'       => "Email",
                                 'row_attr'    => 'col-md-'.$field->getCol(),
+                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
@@ -77,6 +84,7 @@ class ContactFormFieldType extends AbstractType
                         ->add($field->getSlug(), ChoiceType::class, array(
                             'attr'              => array(
                                 'row_attr'    => 'col-md-'.$field->getCol(),
+                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'choices' => $this->pages,
                             'label'  => $field->getTitle(),
@@ -89,8 +97,23 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), UrlType::class, array(
                             'attr'              => array(
+                                'row_attr'    => 'col-md-'.$field->getCol(),
+                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                            ),
+                            'block_prefix' => 'contactform',
+                            'label'                 => $field->getTitle(),
+                            'required'              => false,
+                        ))
+                    ;
+                    break;
+
+                case 'hidden':
+                    $builder
+                        ->add($field->getSlug(), HiddenType::class, array(
+                            'attr'              => array(
                                 'placeholder'       => "Lien",
                                 'row_attr'    => 'col-md-'.$field->getCol(),
+                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
@@ -122,6 +145,7 @@ class ContactFormFieldType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ContactFormField::class,
             'fields' => null,
+            'dynamicValues' => [],
         ]);
     }
 }
