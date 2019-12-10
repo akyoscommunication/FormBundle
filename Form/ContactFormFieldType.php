@@ -129,6 +129,7 @@ class ContactFormFieldType extends AbstractType
                             'attr'              => array(
                                 'placeholder'       => $field->getTitle(),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
+                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
