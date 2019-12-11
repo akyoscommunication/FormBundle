@@ -53,7 +53,7 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], ContactFormRepository $contactFormRepository, Request $request, \Swift_Mailer $mailer)
+    public function renderContactForm($idForm, $dynamicValues = [], $button_label = 'Envoyer', ContactFormRepository $contactFormRepository, Request $request, \Swift_Mailer $mailer)
     {
         $contactform = $contactFormRepository->find($idForm);
         $form_email = $this->createForm(ContactFormFieldType::class, null, array(
@@ -82,6 +82,7 @@ class ContactFormFieldController extends AbstractController
         }
 
         return $this->render('@AkyosForm/templates/render.html.twig', [
+            'button_label' => $button_label,
             'form_email' => $form_email->createView(),
         ]);
     }
