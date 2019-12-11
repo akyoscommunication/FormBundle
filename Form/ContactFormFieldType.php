@@ -31,13 +31,13 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), CKEditorType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle(),
+                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
                                 'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
-                            'required'    => false,
+                            'required'    => $field->getIsRequired(),
                             'config'      => array(
-                                'placeholder'    => "Texte",
+                                'placeholder'    => $field->getTitle(),
                                 'height'         => 50,
                                 'entities'       => false,
                                 'basicEntities'  => false,
@@ -53,13 +53,13 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), TelType::class, array(
                             'attr'              => array(
-                                'placeholder'       => "Numéro",
+                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
                                 'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
-                            'required'              => false,
+                            'required'              => $field->getIsRequired(),
                         ))
                     ;
                     break;
@@ -68,13 +68,13 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), EmailType::class, array(
                             'attr'              => array(
-                                'placeholder'       => "Email",
+                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
                                 'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
-                            'required'              => false,
+                            'required'              => $field->getIsRequired(),
                         ))
                     ;
                     break;
@@ -83,12 +83,14 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), ChoiceType::class, array(
                             'attr'              => array(
+                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
                                 'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'choices' => $this->pages,
                             'label'  => $field->getTitle(),
                             'block_prefix' => 'contactform',
+                            'required' => $field->getIsRequired(),
                         ))
                     ;
                     break;
@@ -97,12 +99,13 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), UrlType::class, array(
                             'attr'              => array(
+                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
                                 'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
-                            'required'              => false,
+                            'required'              => $field->getIsRequired(),
                         ))
                     ;
                     break;
@@ -111,13 +114,13 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), HiddenType::class, array(
                             'attr'              => array(
-                                'placeholder'       => "Lien",
+                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
                                 'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
-                            'required'              => false,
+                            'required'              => $field->getIsRequired(),
                         ))
                     ;
                     break;
@@ -127,13 +130,13 @@ class ContactFormFieldType extends AbstractType
                     $builder
                         ->add($field->getSlug(), TextType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle(),
+                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
                                 'row_attr'    => 'col-md-'.$field->getCol(),
                                 'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
                             ),
                             'block_prefix' => 'contactform',
                             'label'                 => $field->getTitle(),
-                            'required'              => false,
+                            'required'              => $field->getIsRequired(),
                         ))
                     ;
                     break;

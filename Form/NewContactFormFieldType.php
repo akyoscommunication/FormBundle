@@ -42,6 +42,9 @@ class NewContactFormFieldType extends AbstractType
                     'max' => '12',
                 ]
             ])
+            ->add('isRequired', null, [
+                'label' => 'Le champ est-il requis ?',
+            ])
         ;
     }
 

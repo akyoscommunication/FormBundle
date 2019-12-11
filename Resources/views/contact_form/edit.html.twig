@@ -30,6 +30,8 @@
                         {{ form_widget(formContactFormField.position, { 'attr' : { 'placeholder' : 'position'}}) }}
                         {{ form_widget(formContactFormField.type, { 'attr' : { 'placeholder' : 'Type'}}) }}
                         {{ form_widget(formContactFormField.col, { 'attr' : { 'placeholder' : 'Nombre de colonne'}}) }}
+                        {{ form_widget(formContactFormField.isRequired) }}
+                        {{ form_rest(formContactFormField) }}
                         <button class="btn btn-outline-success">{{ button_label|default('Enregistrer') }}</button>
                     {{ form_end(formContactFormField) }}
                 </section>

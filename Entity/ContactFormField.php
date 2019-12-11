@@ -48,6 +48,11 @@ class ContactFormField
      */
     private $col;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isRequired;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +131,18 @@ class ContactFormField
     public function setCol(int $col): self
     {
         $this->col = $col;
+
+        return $this;
+    }
+
+    public function getIsRequired(): ?bool
+    {
+        return $this->isRequired;
+    }
+
+    public function setIsRequired(bool $isRequired): self
+    {
+        $this->isRequired = $isRequired;
 
         return $this;
     }
