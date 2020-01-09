@@ -27,7 +27,7 @@
                     <h2>Ajouter un champ</h2>
                     {{ form_start(formContactFormField, { 'attr' : { 'class' : 'form-inline not-submit'}}) }}
                         {{ form_widget(formContactFormField.title, { 'attr' : { 'placeholder' : 'Titre'}}) }}
-                        {{ form_widget(formContactFormField.position, { 'attr' : { 'placeholder' : 'position'}}) }}
+                        {{ form_widget(formContactFormField.options, { 'attr' : { 'placeholder' : 'Options'}}) }}
                         {{ form_widget(formContactFormField.type, { 'attr' : { 'placeholder' : 'Type'}}) }}
                         {{ form_widget(formContactFormField.col, { 'attr' : { 'placeholder' : 'Nombre de colonne'}}) }}
                         {{ form_widget(formContactFormField.isRequired) }}
@@ -38,17 +38,19 @@
                 <section class="pb-5">
                     <h2>Prévisualisation</h2>
                     <div class="row contact-form-previsualisation" id="sortableFormFields">
-                        {% for field in el.contactFormFields if el.contactFormFields is not empty %}
-                            <div class="col-md-{{ field.col }} contact-form-previsualisation-sortable">
-                                <div class="contact-form-previsualisation-col" data-form="{{ el.id }}" data-id="{{ field.id }}">
-                                    <h3 class="contact-form-previsualisation-col__title">{{ field.title }} : <span class="contact-form-previsualisation-col__type">{{ field.type }} ~ col.{{ field.col }}</span></h3>
-                                    <div class="contact-form-previsualisation-col__position">Position : <span class="position">{{ field.position }}</span></div>
-                                    <button type="button" class="btn btn-primary btn-modal-contactformfield" data-toggle="modal" data-target="#modal">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </button>
+                        {% if el.contactFormFields is not empty %}
+                            {% for field in el.contactFormFields %}
+                                <div class="col-md-{{ field.col }} contact-form-previsualisation-sortable">
+                                    <div class="contact-form-previsualisation-col" data-form="{{ el.id }}" data-id="{{ field.id }}">
+                                        <h3 class="contact-form-previsualisation-col__title">{{ field.title }} : <span class="contact-form-previsualisation-col__type">{{ field.type }} ~ col.{{ field.col }}</span></h3>
+                                        <div class="contact-form-previsualisation-col__position">Position : <span class="position">{{ field.position }}</span></div>
+                                        <button type="button" class="btn btn-primary btn-modal-contactformfield" data-toggle="modal" data-target="#modal">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">

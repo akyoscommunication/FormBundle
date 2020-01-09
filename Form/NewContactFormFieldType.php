@@ -6,6 +6,7 @@ use Akyos\FormBundle\Entity\ContactFormField;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,16 +19,20 @@ class NewContactFormFieldType extends AbstractType
                 'label' => 'Titre du champ',
                 'help' => '( Votre titre )',
             ])
-            ->add('position', IntegerType::class, [
-                'label' => 'Position du champ',
+//            ->add('position', IntegerType::class, [
+//                'label' => 'Position du champ',
+//            ])
+            ->add('options', TextareaType::class, [
+                'label' => 'Options du champs ( placeholder )',
+                'help' => '( si le champs est un select, entrez vos choix dans l\'ordre séparé par des pipes ( | ). Le premier choix étant le placeholder )',
             ])
             ->add('type', ChoiceType::class, [
                 'choices' => array(
                     'Texte' => 'text',
                     'Zone de texte' => 'textarea',
-                    'Image' => 'image',
-                    'Lien interne' => 'pagelink',
-                    'Lien externe' => 'link',
+                    'Nombre' => 'nb',
+                    'Choix simple' => 'choice',
+                    'Choix multiple' => 'multiple_choice',
                     'Téléphone' => 'tel',
                     'Email' => 'mail',
                     'Hidden' => 'hidden'
