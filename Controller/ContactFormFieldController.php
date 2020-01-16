@@ -66,6 +66,9 @@ class ContactFormFieldController extends AbstractController
         if ($form_email->isSubmitted() && $form_email->isValid()) {
             $result = $contactform->getMail();
             foreach ( $contactform->getContactFormFields() as $field ) {
+                if(is_array($field->getSlug())) {
+                    $field = implode(',', $field);
+                }
                 $result = str_replace('['.$field->getSlug().']', $form_email->get($field->getSlug()), $contactform->getMail());
             }
             $message = (new \Swift_Mailer($contactform->getFormObject()))
