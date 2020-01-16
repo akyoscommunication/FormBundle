@@ -88,14 +88,10 @@ class ContactFormFieldController extends AbstractController
             $message = (new \Swift_Message($contactform->getFormObject()))
                 ->setFrom('noreply@'.$this->request->getCurrentRequest()->getHost())
                 ->setTo($contactform->getFormTo())
-                ->setBody(
-                    $this->renderView(
-                        '@AkyosForm/templates/email.html.twig',
-                        [
-                            'result' => $result,
-                        ]
-                    )
-                );
+                ->setBody($this->renderView('@AkyosForm/templates/email.html.twig', [
+                        'result' => $result,
+                    ]), 'text/html'
+                );;
 
             $this->mailer->send($message);
         }
