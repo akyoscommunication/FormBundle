@@ -77,10 +77,10 @@ class ContactFormFieldController extends AbstractController
 
         if ($form_email->isSubmitted() && $form_email->isValid()) {
             $result = $contactform->getMail();
-            dd($contactform->getContactFormFields());
             foreach ( $contactform->getContactFormFields() as $field ) {
                 $result = str_replace('['.$field->getSlug().']', $form_email->get($field->getSlug())->getData(), $contactform->getMail());
             }
+            dd($contactform->getContactFormFields());
 
             $message = (new \Swift_Message($contactform->getFormObject()))
                 ->setFrom('noreply@'.$this->request->getCurrentRequest()->getHost())
