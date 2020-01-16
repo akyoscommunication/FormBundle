@@ -96,6 +96,8 @@ class ContactFormFieldController extends AbstractController
                         ]
                     )
                 );
+
+            $this->mailer->send($message);
         }
 
         return $this->render('@AkyosForm/templates/render.html.twig', [
