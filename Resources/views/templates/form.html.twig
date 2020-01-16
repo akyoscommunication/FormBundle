@@ -1,5 +1,10 @@
 {% block form_row %}
+    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+
     <div class="form-group {{ attr['row_attr'] }}">
-        {{ block('form_widget') }}
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+        {{ form_help(form) }}
     </div>
 {% endblock %}

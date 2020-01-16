@@ -8,6 +8,7 @@ use Akyos\FormBundle\Form\NewContactFormFieldType;
 use Akyos\FormBundle\Repository\ContactFormRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,6 +17,17 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ContactFormFieldController extends AbstractController
 {
+    protected $contactFormRepository;
+    protected $request;
+    protected $mailer;
+
+    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer)
+    {
+        $this->contactFormRepository = $contactFormRepository;
+        $this->request = $request;
+        $this->mailer = $mailer;
+    }
+
     /**
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      */
@@ -53,26 +65,24 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $button_label = 'Envoyer', ContactFormRepository $contactFormRepository, Request $request, \Swift_Mailer $mailer)
+    public function renderContactForm($idForm, $dynamicValues = [], $button_label = 'Envoyer')
     {
-        $contactform = $contactFormRepository->find($idForm);
+        $contactform = $this->contactFormRepository->find($idForm);
         $form_email = $this->createForm(ContactFormFieldType::class, null, array(
             'fields' => $contactform->getContactFormFields(),
             'dynamicValues' => $dynamicValues
         ));
 
-        $form_email->handleRequest($request);
+        $form_email->handleRequest($this->request->getCurrentRequest());
 
         if ($form_email->isSubmitted() && $form_email->isValid()) {
             $result = $contactform->getMail();
             foreach ( $contactform->getContactFormFields() as $field ) {
-                if(is_array($field->getSlug())) {
-                    $field = implode(',', $field);
-                }
-                $result = str_replace('['.$field->getSlug().']', $form_email->get($field->getSlug()), $contactform->getMail());
+                $result = str_replace('['.$field->getSlug().']', $form_email->get($field->getSlug())->getData(), $contactform->getMail());
             }
-            $message = (new \Swift_Mailer($contactform->getFormObject()))
-                ->setFrom($form_email->get('email'))
+
+            $message = (new \Swift_Message($contactform->getFormObject()))
+                ->setFrom('noreply@'.$this->request->getCurrentRequest()->getHost())
                 ->setTo($contactform->getFormTo())
                 ->setBody(
                     $this->renderView(

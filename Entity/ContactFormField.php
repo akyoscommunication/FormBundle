@@ -53,6 +53,11 @@ class ContactFormField
      */
     private $isRequired;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $options;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -143,6 +148,18 @@ class ContactFormField
     public function setIsRequired(bool $isRequired): self
     {
         $this->isRequired = $isRequired;
+
+        return $this;
+    }
+
+    public function getOptions(): ?string
+    {
+        return $this->options;
+    }
+
+    public function setOptions(?string $options): self
+    {
+        $this->options = $options;
 
         return $this;
     }

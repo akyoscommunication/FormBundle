@@ -2,13 +2,14 @@
 
 namespace Akyos\FormBundle\Form;
 
-use Akyos\FormBundle\Entity\ContactFormField;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,102 +26,132 @@ class ContactFormFieldType extends AbstractType
         $this->dynamicValues = $options['dynamicValues'];
 
         foreach ($this->fields as $key => $field) {
+
+            $title = $field->getTitle();
+            $slug = $field->getSlug();
+            $required = $field->getIsRequired();
+            $col = $field->getCol();
+            $opt = $field->getOptions();
+
+            $value = array_key_exists($slug, $this->dynamicValues) ? $this->dynamicValues[$slug] : '';
+            $placeholder = ($opt ? $opt.($required ? '*' : '') : $title.($required ? '*' : ''));
+
             switch ($field->getType()) {
 
                 case 'textarea':
                     $builder
-                        ->add($field->getSlug(), CKEditorType::class, array(
+                        ->add($slug, TextareaType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
-                                'row_attr'    => 'col-md-'.$field->getCol(),
-                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
                             ),
-                            'required'    => $field->getIsRequired(),
-                            'config'      => array(
-                                'placeholder'    => $field->getTitle(),
-                                'height'         => 50,
-                                'entities'       => false,
-                                'basicEntities'  => false,
-                                'entities_greek' => false,
-                                'entities_latin' => false,
-                            ),
-                            'label'    => $field->getTitle(),
+                            'required'    => $required,
+                            'label'    => $title,
                         ))
                     ;
                     break;
 
                 case 'tel':
                     $builder
-                        ->add($field->getSlug(), TelType::class, array(
+                        ->add($slug, TelType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
-                                'row_attr'    => 'col-md-'.$field->getCol(),
-                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $field->getTitle(),
-                            'required'              => $field->getIsRequired(),
+                            'label'                 => $title,
+                            'required'              => $required,
                         ))
                     ;
                     break;
 
                 case 'mail':
                     $builder
-                        ->add($field->getSlug(), EmailType::class, array(
+                        ->add($slug, EmailType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
-                                'row_attr'    => 'col-md-'.$field->getCol(),
-                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $field->getTitle(),
-                            'required'              => $field->getIsRequired(),
+                            'label'                 => $title,
+                            'required'              => $required,
                         ))
                     ;
                     break;
 
-                case 'pagelink':
+                case 'nb':
                     $builder
-                        ->add($field->getSlug(), ChoiceType::class, array(
+                        ->add($slug, IntegerType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
-                                'row_attr'    => 'col-md-'.$field->getCol(),
-                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
                             ),
-                            'choices' => $this->pages,
-                            'label'  => $field->getTitle(),
                             'block_prefix' => 'contactform',
-                            'required' => $field->getIsRequired(),
+                            'label'                 => $title,
+                            'required'              => $required,
                         ))
                     ;
                     break;
 
-                case 'link':
+                case 'choice':
+                    $fieldOptions = explode('|', $opt);
+
                     $builder
-                        ->add($field->getSlug(), UrlType::class, array(
+                        ->add($slug, ChoiceType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
-                                'row_attr'    => 'col-md-'.$field->getCol(),
-                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
                             ),
+                            'choices' => array_slice($fieldOptions, 1),
+                            'choice_label' => function ($choice, $key, $value) {
+                                return $value;
+                            },
+                            'placeholder'       => $fieldOptions[0],
                             'block_prefix' => 'contactform',
-                            'label'                 => $field->getTitle(),
-                            'required'              => $field->getIsRequired(),
+                            'label'                 => $title,
+                            'required'              => $required,
+                        ))
+                    ;
+                    break;
+
+                case 'multiple_choice':
+                    $fieldOptions = explode('|', $opt);
+
+                    $builder
+                        ->add($slug, ChoiceType::class, array(
+                            'attr'              => array(
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
+                                'class' => 'form-control js-select2'
+                            ),
+                            'multiple' => true,
+                            'choices' => array_slice($fieldOptions, 1),
+                            'choice_label' => function ($choice, $key, $value) {
+                                return $value;
+                            },
+                            'placeholder'       => $fieldOptions[0],
+                            'block_prefix' => 'contactform',
+                            'label'                 => $title,
+                            'required'              => $required,
                         ))
                     ;
                     break;
 
                 case 'hidden':
                     $builder
-                        ->add($field->getSlug(), HiddenType::class, array(
+                        ->add($slug, HiddenType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
-                                'row_attr'    => 'col-md-'.$field->getCol(),
-                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $field->getTitle(),
-                            'required'              => $field->getIsRequired(),
+                            'label'                 => $title,
+                            'required'              => $required,
                         ))
                     ;
                     break;
@@ -128,15 +159,15 @@ class ContactFormFieldType extends AbstractType
 
                 default:
                     $builder
-                        ->add($field->getSlug(), TextType::class, array(
+                        ->add($slug, TextType::class, array(
                             'attr'              => array(
-                                'placeholder'       => $field->getTitle().($field->getIsRequired() ? '*' : ''),
-                                'row_attr'    => 'col-md-'.$field->getCol(),
-                                'value'    => array_key_exists($field->getSlug(), $this->dynamicValues) ? $this->dynamicValues[$field->getSlug()] : '',
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $field->getTitle(),
-                            'required'              => $field->getIsRequired(),
+                            'label'                 => $title,
+                            'required'              => $required,
                         ))
                     ;
                     break;
@@ -147,9 +178,9 @@ class ContactFormFieldType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ContactFormField::class,
             'fields' => null,
             'dynamicValues' => [],
+            'allow_extra_fields' => true,
         ]);
     }
 }

@@ -1,9 +1,11 @@
 <div class="col-md-4 aky-use-field-container pb-5">
     <h4>Champs disponibles</h4>
     <ul class="list-unstyled">
-        {% for field in el.contactFormFields if el.contactFormFields is not empty %}
-            <li class="aky-use-field {{ '['~field.slug~']' in form.vars.value.Mail ? '' : 'font-weight-bold' }}">[{{ field.slug }}]</li>
-        {% endfor %}
+        {% if el.contactFormFields is not empty %}
+            {% for field in el.contactFormFields %}
+                <li class="aky-use-field {{ '['~field.slug~']' in form.vars.value.Mail ? '' : 'font-weight-bold' }}">[{{ field.slug }}]</li>
+            {% endfor %}
+        {% endif %}
     </ul>
 </div>
 <div class="col-md-8">
