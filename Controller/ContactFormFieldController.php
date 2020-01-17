@@ -82,7 +82,7 @@ class ContactFormFieldController extends AbstractController
                 if(is_array($data)) {
                     $data = implode(',', $data);
                 }
-                $result = str_replace('['.$field->getSlug().']', $data, $contactform->getMail());
+                $result = str_replace('['.$field->getSlug().']', $data, $result);
             }
 
             $message = (new \Swift_Message($contactform->getFormObject()))
