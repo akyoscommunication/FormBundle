@@ -22,6 +22,10 @@ class FormController extends AbstractController
 {
     /**
      * @Route("/", name="index", methods={"GET"})
+     * @param ContactFormRepository $contactFormRepository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
      */
     public function index(ContactFormRepository $contactFormRepository, PaginatorInterface $paginator, Request $request): Response
     {
@@ -47,6 +51,8 @@ class FormController extends AbstractController
 
     /**
      * @Route("/new", name="new", methods={"GET","POST"})
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
@@ -72,6 +78,9 @@ class FormController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param ContactForm $contactForm
+     * @return Response
      */
     public function edit(Request $request, ContactForm $contactForm): Response
     {
@@ -108,6 +117,9 @@ class FormController extends AbstractController
 
     /**
      * @Route("/{id}", name="delete", methods={"DELETE"})
+     * @param Request $request
+     * @param ContactForm $contactForm
+     * @return Response
      */
     public function delete(Request $request, ContactForm $contactForm): Response
     {
@@ -122,6 +134,9 @@ class FormController extends AbstractController
 
     /**
      * @Route("/fields/change-position", methods={"POST"}, options={"expose"=true})
+     * @param Request $request
+     * @param ContactFormFieldRepository $contactFormFieldRepository
+     * @return JsonResponse
      */
     public function changePosition(Request $request, ContactFormFieldRepository $contactFormFieldRepository): JsonResponse
     {

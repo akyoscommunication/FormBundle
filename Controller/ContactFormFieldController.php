@@ -30,6 +30,9 @@ class ContactFormFieldController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param ContactFormField $contactFormField
+     * @return Response
      */
     public function edit(Request $request, ContactFormField $contactFormField): Response
     {
@@ -51,6 +54,9 @@ class ContactFormFieldController extends AbstractController
 
     /**
      * @Route("/{id}", name="delete", methods={"DELETE"})
+     * @param Request $request
+     * @param ContactFormField $contactFormField
+     * @return Response
      */
     public function delete(Request $request, ContactFormField $contactFormField): Response
     {
@@ -65,7 +71,7 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $button_label = 'Envoyer')
+    public function renderContactForm($idForm, $dynamicValues = [], $button_label = 'Envoyer'): Response
     {
         $contactform = $this->contactFormRepository->find($idForm);
         $form_email = $this->createForm(ContactFormFieldType::class, null, array(
