@@ -71,11 +71,12 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $button_label = 'Envoyer'): Response
+    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer'): Response
     {
         $contactform = $this->contactFormRepository->find($idForm);
         $form_email = $this->createForm(ContactFormFieldType::class, null, array(
             'fields' => $contactform->getContactFormFields(),
+            'labels' => $labels,
             'dynamicValues' => $dynamicValues
         ));
 
