@@ -2,6 +2,7 @@
 
 namespace Akyos\FormBundle\Controller;
 
+use Akyos\CoreBundle\Repository\CoreOptionsRepository;
 use Akyos\FormBundle\Entity\ContactFormField;
 use Akyos\FormBundle\Form\ContactFormFieldType;
 use Akyos\FormBundle\Form\NewContactFormFieldType;
@@ -20,12 +21,14 @@ class ContactFormFieldController extends AbstractController
     protected $contactFormRepository;
     protected $request;
     protected $mailer;
+    protected $coreOptionsRepository;
 
-    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer)
+    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer, CoreOptionsRepository $coreOptionsRepository)
     {
         $this->contactFormRepository = $contactFormRepository;
         $this->request = $request;
         $this->mailer = $mailer;
+        $this->coreOptionsRepository = $coreOptionsRepository;
     }
 
     /**
@@ -92,8 +95,13 @@ class ContactFormFieldController extends AbstractController
                 $result = str_replace('['.$field->getSlug().']', $data, $result);
             }
 
+            $coreOptions = $this->coreOptionsRepository->findAll();
+            if($coreOptions) {
+                $coreOptions = $coreOptions[0];
+            }
+
             $message = (new \Swift_Message($contactform->getFormObject()))
-                ->setFrom('noreply@'.$this->request->getCurrentRequest()->getHost())
+                ->setFrom(['noreply@'.$this->request->getCurrentRequest()->getHost() => ($coreOptions ? $coreOptions->getSiteTitle() : 'noreply')])
                 ->setTo($contactform->getFormTo())
                 ->setBody($this->renderView('@AkyosForm/templates/email.html.twig', [
                         'result' => $result,
