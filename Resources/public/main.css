@@ -48,3 +48,7 @@
   font-weight: normal;
   text-transform: uppercase;
 }
+
+form[name="new_contact_form_field"] input[type='checkbox'] {
+  height: initial;
+}
