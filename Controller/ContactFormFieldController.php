@@ -105,6 +105,7 @@ class ContactFormFieldController extends AbstractController
                 ->setTo($contactform->getFormTo())
                 ->setBody($this->renderView('@AkyosForm/templates/email.html.twig', [
                         'result' => $result,
+                        'form' => $contactform
                     ]), 'text/html'
                 );;
 
