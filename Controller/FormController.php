@@ -82,7 +82,7 @@ class FormController extends AbstractController
      * @param ContactForm $contactForm
      * @return Response
      */
-    public function edit(Request $request, ContactForm $contactForm): Response
+    public function edit(Request $request, ContactForm $contactForm, ContactFormFieldRepository $contactFormFieldRepository): Response
     {
         $contactFormField = new ContactFormField();
         $contactFormField->setContactForm($contactForm);
@@ -99,6 +99,8 @@ class FormController extends AbstractController
 
         if ($formContactFormField->isSubmitted() && $formContactFormField->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
+            $nbField = count($contactFormFieldRepository->findBy(array('contactForm' => $contactForm->getId())));
+            $contactFormField->setPosition($nbField);
             $entityManager->persist($contactFormField);
             $entityManager->flush();
 
