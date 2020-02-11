@@ -92,6 +92,12 @@ class ContactFormFieldController extends AbstractController
                         ]
                     )
                 );
+
+            if ($this->mailer->send($message)) {
+                $this->addFlash("success", "Votre mail à bien été envoyé.");
+            } else {
+                $this->addFlash("warning", "Une erreur est survenue lors de l'envoi du mail.");
+            }
         }
 
         return $this->render('@AkyosForm/templates/render.html.twig', [

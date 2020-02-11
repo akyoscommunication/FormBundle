@@ -1,6 +1,23 @@
 {% form_theme form_email '@AkyosForm/templates/form.html.twig' %}
+{% import _self as macros %}
+
+{% macro render_flashbag() %}
+    {% for type, messages in app.session.flashbag.all() %}
+        {% for message in messages %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-{{ type }} alert-dismissable animation-slideRight">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <p>{{ message }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}
 
 <div class="aky-contact-form">
+    {{ _self.render_flashbag() }}
     {{ form_start(form_email) }}
     {{ form_widget(form_email, { 'attr' : { 'class' : 'row'}}) }}
     <div class="form-submit-container">
