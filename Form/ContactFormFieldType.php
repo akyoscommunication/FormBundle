@@ -18,11 +18,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ContactFormFieldType extends AbstractType
 {
     protected $fields;
+    protected $labels;
     protected $dynamicValues;
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->fields = $options['fields'];
+        $this->labels = $options['labels'];
         $this->dynamicValues = $options['dynamicValues'];
 
         foreach ($this->fields as $key => $field) {
@@ -35,6 +37,7 @@ class ContactFormFieldType extends AbstractType
 
             $value = array_key_exists($slug, $this->dynamicValues) ? $this->dynamicValues[$slug] : '';
             $placeholder = ($opt ? $opt.($required ? '*' : '') : $title.($required ? '*' : ''));
+            $labels = ($this->labels ? $title : false );
 
             switch ($field->getType()) {
 
@@ -47,7 +50,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                             ),
                             'required'    => $required,
-                            'label'    => $title,
+                            'label'    => $labels,
                         ))
                     ;
                     break;
@@ -61,7 +64,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $title,
+                            'label'                 => $labels,
                             'required'              => $required,
                         ))
                     ;
@@ -76,7 +79,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $title,
+                            'label'                 => $labels,
                             'required'              => $required,
                         ))
                     ;
@@ -91,7 +94,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $title,
+                            'label'                 => $labels,
                             'required'              => $required,
                         ))
                     ;
@@ -112,7 +115,7 @@ class ContactFormFieldType extends AbstractType
                             },
                             'placeholder'       => $fieldOptions[0],
                             'block_prefix' => 'contactform',
-                            'label'                 => $title,
+                            'label'                 => $labels,
                             'required'              => $required,
                         ))
                     ;
@@ -135,7 +138,7 @@ class ContactFormFieldType extends AbstractType
                             },
                             'placeholder'       => $fieldOptions[0],
                             'block_prefix' => 'contactform',
-                            'label'                 => $title,
+                            'label'                 => $labels,
                             'required'              => $required,
                         ))
                     ;
@@ -150,7 +153,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $title,
+                            'label'                 => $labels,
                             'required'              => $required,
                         ))
                     ;
@@ -166,7 +169,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
-                            'label'                 => $title,
+                            'label'                 => $labels,
                             'required'              => $required,
                         ))
                     ;
@@ -180,6 +183,7 @@ class ContactFormFieldType extends AbstractType
         $resolver->setDefaults([
             'fields' => null,
             'dynamicValues' => [],
+            'labels' => true,
             'allow_extra_fields' => true,
         ]);
     }

@@ -2,6 +2,7 @@
 
 namespace Akyos\FormBundle\Controller;
 
+use Akyos\CoreBundle\Repository\CoreOptionsRepository;
 use Akyos\FormBundle\Entity\ContactFormField;
 use Akyos\FormBundle\Form\ContactFormFieldType;
 use Akyos\FormBundle\Form\NewContactFormFieldType;
@@ -20,16 +21,21 @@ class ContactFormFieldController extends AbstractController
     protected $contactFormRepository;
     protected $request;
     protected $mailer;
+    protected $coreOptionsRepository;
 
-    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer)
+    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer, CoreOptionsRepository $coreOptionsRepository)
     {
         $this->contactFormRepository = $contactFormRepository;
         $this->request = $request;
         $this->mailer = $mailer;
+        $this->coreOptionsRepository = $coreOptionsRepository;
     }
 
     /**
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param ContactFormField $contactFormField
+     * @return Response
      */
     public function edit(Request $request, ContactFormField $contactFormField): Response
     {
@@ -51,6 +57,9 @@ class ContactFormFieldController extends AbstractController
 
     /**
      * @Route("/{id}", name="delete", methods={"DELETE"})
+     * @param Request $request
+     * @param ContactFormField $contactFormField
+     * @return Response
      */
     public function delete(Request $request, ContactFormField $contactFormField): Response
     {
@@ -65,11 +74,12 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $button_label = 'Envoyer')
+    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer'): Response
     {
         $contactform = $this->contactFormRepository->find($idForm);
         $form_email = $this->createForm(ContactFormFieldType::class, null, array(
             'fields' => $contactform->getContactFormFields(),
+            'labels' => $labels,
             'dynamicValues' => $dynamicValues
         ));
 
@@ -78,19 +88,25 @@ class ContactFormFieldController extends AbstractController
         if ($form_email->isSubmitted() && $form_email->isValid()) {
             $result = $contactform->getMail();
             foreach ( $contactform->getContactFormFields() as $field ) {
-                $result = str_replace('['.$field->getSlug().']', $form_email->get($field->getSlug())->getData(), $contactform->getMail());
+                $data = $form_email->get($field->getSlug())->getData();
+                if(is_array($data)) {
+                    $data = implode(',', $data);
+                }
+                $result = str_replace('['.$field->getSlug().']', $data, $result);
+            }
+
+            $coreOptions = $this->coreOptionsRepository->findAll();
+            if($coreOptions) {
+                $coreOptions = $coreOptions[0];
             }
 
             $message = (new \Swift_Message($contactform->getFormObject()))
-                ->setFrom('noreply@'.$this->request->getCurrentRequest()->getHost())
+                ->setFrom(['noreply@'.$this->request->getCurrentRequest()->getHost() => ($coreOptions ? $coreOptions->getSiteTitle() : 'noreply')])
                 ->setTo($contactform->getFormTo())
-                ->setBody(
-                    $this->renderView(
-                        '@AkyosForm/templates/email.html.twig',
-                        [
-                            'result' => $result,
-                        ]
-                    )
+                ->setBody($this->renderView('@AkyosForm/templates/email.html.twig', [
+                        'result' => $result,
+                        'form' => $contactform
+                    ]), 'text/html'
                 );
 
             if ($this->mailer->send($message)) {
