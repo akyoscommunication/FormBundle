@@ -111,9 +111,9 @@ class ContactFormFieldController extends AbstractController
 
             try {
                 $this->mailer->send($message);
-                $this->addFlash('success', 'Votre mail à bien été envoyé.');
+                $this->addFlash('success', 'Votre message à bien été envoyé.');
             } catch (\Exception $e) {
-                $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du mail.");
+                $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.");
             }
         }
 
