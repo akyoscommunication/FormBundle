@@ -116,6 +116,10 @@ class ContactFormFieldController extends AbstractController
             }
         }
 
+        if($form_email->isSubmitted() && !$form_email->isValid()) {
+            $this->addFlash("warning", "Le formulaire n'est pas valide, veuillez vérifier votre saisie et réessayer.");
+        }
+
         return $this->render('@AkyosForm/templates/render.html.twig', [
             'button_label' => $button_label,
             'form_email' => $form_email->createView(),
