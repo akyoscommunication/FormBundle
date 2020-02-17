@@ -17,7 +17,7 @@
 {% endmacro %}
 
 <div class="aky-contact-form">
-    {{ _self.render_flashbag() }}
+    <div class="flashbag">{{ _self.render_flashbag() }}</div>
     {{ form_start(form_email) }}
     {{ form_widget(form_email, { 'attr' : { 'class' : 'row'}}) }}
     <div class="form-submit-container">

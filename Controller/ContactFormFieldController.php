@@ -109,15 +109,16 @@ class ContactFormFieldController extends AbstractController
                     ]), 'text/html'
                 );
 
-            if ($this->mailer->send($message)) {
-                $this->addFlash("success", "Votre mail à bien été envoyé.");
-            } else {
-                $this->addFlash("warning", "Une erreur est survenue lors de l'envoi du mail.");
+            try {
+                $this->mailer->send($message);
+                $this->addFlash('success', 'Votre mail à bien été envoyé.');
+            } catch (\Exception $e) {
+                $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du mail.");
             }
         }
 
         if($form_email->isSubmitted() && !$form_email->isValid()) {
-            $this->addFlash("warning", "Le formulaire n'est pas valide, veuillez vérifier votre saisie et réessayer.");
+            $this->addFlash('warning', "Le formulaire n'est pas valide, veuillez vérifier votre saisie et réessayer.");
         }
 
         return $this->render('@AkyosForm/templates/render.html.twig', [
