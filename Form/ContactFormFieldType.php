@@ -33,9 +33,10 @@ class ContactFormFieldType extends AbstractType
             $slug = $field->getSlug();
             $required = $field->getIsRequired();
             $col = $field->getCol();
-            $opt = $field->getOptions();
 
-            $value = array_key_exists($slug, $this->dynamicValues) ? $this->dynamicValues[$slug] : '';
+            $opt = (array_key_exists($slug, $this->dynamicValues) and isset($this->dynamicValues[$slug]['options'])) ? $this->dynamicValues[$slug]['options'] : $field->getOptions();
+
+            $value = (array_key_exists($slug, $this->dynamicValues) and isset($this->dynamicValues[$slug]['value'])) ? $this->dynamicValues[$slug]['value'] : '';
             $placeholder = ($opt ? $opt.($required ? '*' : '') : $title.($required ? '*' : ''));
             $labels = ($this->labels ? $title : false );
 
@@ -101,7 +102,23 @@ class ContactFormFieldType extends AbstractType
                     break;
 
                 case 'choice':
-                    $fieldOptions = explode('|', $opt);
+                    $array = [];
+
+                    $opt = explode('|', $opt);
+
+                    $fieldOptions = array_slice($opt, 1);
+                    foreach ($fieldOptions as $f) {
+                        $fieldOptionsVal = explode(';', $f);
+                        if (count($fieldOptionsVal) < 2) {
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                        } else {
+                            if ($fieldOptionsVal[1] === '') {
+                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                            } else {
+                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
+                            }
+                        }
+                    }
 
                     $builder
                         ->add($slug, ChoiceType::class, array(
@@ -109,11 +126,11 @@ class ContactFormFieldType extends AbstractType
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
                             ),
-                            'choices' => array_slice($fieldOptions, 1),
-                            'choice_label' => function ($choice, $key, $value) {
+                            'choices' => $array,
+                            'choice_value' => function ($value)  {
                                 return $value;
                             },
-                            'placeholder'       => $fieldOptions[0],
+                            'placeholder'       => $opt[0],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
@@ -122,7 +139,23 @@ class ContactFormFieldType extends AbstractType
                     break;
 
                 case 'multiple_choice':
-                    $fieldOptions = explode('|', $opt);
+                    $array = [];
+
+                    $opt = explode('|', $opt);
+
+                    $fieldOptions = array_slice($opt, 1);
+                    foreach ($fieldOptions as $f) {
+                        $fieldOptionsVal = explode(';', $f);
+                        if (count($fieldOptionsVal) < 2) {
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                        } else {
+                            if ($fieldOptionsVal[1] === '') {
+                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                            } else {
+                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
+                            }
+                        }
+                    }
 
                     $builder
                         ->add($slug, ChoiceType::class, array(
@@ -132,11 +165,11 @@ class ContactFormFieldType extends AbstractType
                                 'class' => 'form-control js-select2'
                             ),
                             'multiple' => true,
-                            'choices' => array_slice($fieldOptions, 1),
-                            'choice_label' => function ($choice, $key, $value) {
+                            'choices' => $array,
+                            'choice_value' => function ($value) {
                                 return $value;
                             },
-                            'placeholder'       => $fieldOptions[0],
+                            'placeholder'       => $opt[0],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
