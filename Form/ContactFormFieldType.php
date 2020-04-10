@@ -3,6 +3,7 @@
 namespace Akyos\FormBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -170,6 +171,21 @@ class ContactFormFieldType extends AbstractType
                                 return $value;
                             },
                             'placeholder'       => $opt[0],
+                            'block_prefix' => 'contactform',
+                            'label'                 => $labels,
+                            'required'              => $required,
+                        ))
+                    ;
+                    break;
+
+                case 'checkbox':
+                    $builder
+                        ->add($slug, CheckboxType::class, array(
+                            'attr'              => array(
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
+                            ),
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,

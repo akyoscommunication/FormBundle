@@ -74,7 +74,7 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer'): Response
+    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null): Response
     {
         $contactform = $this->contactFormRepository->find($idForm);
         $form_email = $this->createForm(ContactFormFieldType::class, null, array(
@@ -82,6 +82,9 @@ class ContactFormFieldController extends AbstractController
             'labels' => $labels,
             'dynamicValues' => $dynamicValues
         ));
+
+        $object = ( $object != null ? $object : $contactform->getFormObject() );
+        $to = ( $to != null ? $to : $contactform->getFormTo() );
 
         $form_email->handleRequest($this->request->getCurrentRequest());
 
@@ -93,6 +96,7 @@ class ContactFormFieldController extends AbstractController
                     $data = implode(',', $data);
                 }
                 $result = str_replace('['.$field->getSlug().']', $data, $result);
+                $object = str_replace('['.$field->getSlug().']', $data, $object);
             }
 
             $coreOptions = $this->coreOptionsRepository->findAll();
@@ -100,9 +104,9 @@ class ContactFormFieldController extends AbstractController
                 $coreOptions = $coreOptions[0];
             }
 
-            $message = (new \Swift_Message($contactform->getFormObject()))
+            $message = (new \Swift_Message($object))
                 ->setFrom(['noreply@'.$this->request->getCurrentRequest()->getHost() => ($coreOptions ? $coreOptions->getSiteTitle() : 'noreply')])
-                ->setTo($contactform->getFormTo())
+                ->setTo($to)
                 ->setBody($this->renderView('@AkyosForm/templates/email.html.twig', [
                         'result' => $result,
                         'form' => $contactform

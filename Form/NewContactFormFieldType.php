@@ -22,6 +22,9 @@ class NewContactFormFieldType extends AbstractType
 //            ->add('position', IntegerType::class, [
 //                'label' => 'Position du champ',
 //            ])
+            ->add('slug', null, [
+                'label' => 'Slug du champ',
+            ])
             ->add('options', TextareaType::class, [
                 'label' => 'Options du champs ( placeholder )',
                 'help' => '( si le champs est un select, entrez vos choix dans l\'ordre séparé par des pipes ( | ). Le premier choix étant le placeholder )',
@@ -35,6 +38,7 @@ class NewContactFormFieldType extends AbstractType
                     'Choix multiple' => 'multiple_choice',
                     'Téléphone' => 'tel',
                     'Email' => 'mail',
+                    'Case à cocher' => 'checkbox',
                     'Hidden' => 'hidden'
                 ),
                 'label' => 'Type du champ',

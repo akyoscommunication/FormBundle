@@ -1,6 +1,15 @@
-{% block form_row %}
-    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
 
+{% block contactform_row %}
+    <div class="form-group {{ attr['row_attr'] }}">
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+        {{ form_help(form) }}
+    </div>
+{% endblock %}
+
+{% block form_row %}
     <div class="form-group {{ attr['row_attr'] }}">
         {{ form_label(form) }}
         {{ form_errors(form) }}

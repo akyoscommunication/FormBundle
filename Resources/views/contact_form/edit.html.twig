@@ -27,6 +27,7 @@
                     <h2>Ajouter un champ</h2>
                     {{ form_start(formContactFormField, { 'attr' : { 'class' : 'form-inline not-submit'}}) }}
                         {{ form_widget(formContactFormField.title, { 'attr' : { 'placeholder' : 'Titre'}}) }}
+                        {{ form_widget(formContactFormField.slug, { 'attr' : { 'placeholder' : 'Slug'}}) }}
                         {{ form_widget(formContactFormField.options, { 'attr' : { 'placeholder' : 'Options'}}) }}
                         {{ form_widget(formContactFormField.type, { 'attr' : { 'placeholder' : 'Type'}}) }}
                         {{ form_widget(formContactFormField.col, { 'attr' : { 'placeholder' : 'Nombre de colonne'}}) }}
@@ -44,6 +45,7 @@
                                     <div class="contact-form-previsualisation-col" data-form="{{ el.id }}" data-id="{{ field.id }}">
                                         <h3 class="contact-form-previsualisation-col__title">{{ field.title }} : <span class="contact-form-previsualisation-col__type">{{ field.type }} ~ col.{{ field.col }}</span></h3>
                                         <div class="contact-form-previsualisation-col__position">Position : <span class="position">{{ field.position }}</span></div>
+                                        <div class="contact-form-previsualisation-col__slug">Slug : <small class="slug">{{ field.slug }}</small></div>
                                         <button type="button" class="btn btn-primary btn-modal-contactformfield" data-toggle="modal" data-target="#modal">
                                             <i class="fas fa-pencil-alt"></i>
                                         </button>
