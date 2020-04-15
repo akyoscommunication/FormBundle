@@ -32,8 +32,8 @@ class ContactFormExtension extends AbstractExtension
         ];
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null, $formName = 'contactForm')
+    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null, $formName = 'contactForm', $template = null)
     {
-        return $this->form->renderContactForm($idForm, $dynamicValues, $labels, $button_label, $object, $to, $formName)->getContent();
+        return $this->form->renderContactForm($idForm, $dynamicValues, $labels, $button_label, $object, $to, $formName, $template)->getContent();
     }
 }
