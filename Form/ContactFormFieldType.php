@@ -127,6 +127,7 @@ class ContactFormFieldType extends AbstractType
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
                             ),
+                            'data' => $value,
                             'choices' => $array,
                             'choice_value' => function ($value)  {
                                 return $value;
@@ -165,6 +166,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                                 'class' => 'form-control js-select2'
                             ),
+                            'data' => $value,
                             'multiple' => true,
                             'choices' => $array,
                             'choice_value' => function ($value) {
