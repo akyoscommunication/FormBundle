@@ -85,7 +85,7 @@ class ContactFormFieldController extends AbstractController
         ))->getForm();
 
         $object = ( $object != null ? $object : $contactform->getFormObject() );
-        $to = ( $to != null ? $to : $contactform->getFormTo() );
+        $to = explode(',', ( $to != null ? $to : $contactform->getFormTo() ));
         $template = ( $template != null ? $template : ( $contactform->getTemplate() ? 'emails/'.$contactform->getTemplate().'.html.twig' : '@AkyosForm/templates/email/default.html.twig' ) );
 
         $form_email->handleRequest($this->request->getCurrentRequest());

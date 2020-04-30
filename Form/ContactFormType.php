@@ -18,8 +18,9 @@ class ContactFormType extends AbstractType
             ->add('title', TextType::class, [
                 'label'    => 'Titre du formulaire'
             ])
-            ->add('formTo', EmailType::class, [
-                'label'    => 'Email de destination'
+            ->add('formTo', TextType::class, [
+                'label'    => 'Email de destination',
+                'help'    => 'Séparer par une virgule, sans espace entre, pour mettre plusieurs emails.'
             ])
             ->add('formObject', TextType::class, [
                 'label'    => 'Objet'
