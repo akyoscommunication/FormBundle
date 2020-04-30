@@ -106,8 +106,16 @@ class ContactFormFieldController extends AbstractController
                 $coreOptions = $coreOptions[0];
             }
 
+            $host = $this->request->getCurrentRequest()->getHost();
+            $host = explode('.', $host);
+            if ((count($host) > 2) && ($host[0] === 'www')) {
+                $host = $host[1].'.'.$host[2];
+            } else {
+                $host = implode('.', $host);
+            }
+
             $message = (new \Swift_Message($object))
-                ->setFrom(['noreply@'.$this->request->getCurrentRequest()->getHost() => ($coreOptions ? $coreOptions->getSiteTitle() : 'noreply')])
+                ->setFrom(['noreply@'.$host => ($coreOptions ? $coreOptions->getSiteTitle() : 'noreply')])
                 ->setTo($to)
                 ->setBody($this->renderView($template, [
                         'result' => $result,
