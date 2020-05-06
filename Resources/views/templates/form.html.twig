@@ -1,5 +1,11 @@
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
+{% block html_text_row %}
+    <div class="form-group html_text_type {{ attr['row_attr'] }}">
+        {{ attr.value|raw }}
+    </div>
+{% endblock %}
+
 {% block contactform_row %}
     <div class="form-group {{ attr['row_attr'] }}">
         {{ form_label(form) }}

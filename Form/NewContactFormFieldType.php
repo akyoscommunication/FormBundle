@@ -31,7 +31,8 @@ class NewContactFormFieldType extends AbstractType
             ])
             ->add('type', ChoiceType::class, [
                 'choices' => array(
-                    'Texte' => 'text',
+                    'Texte simple ( HTMl, utiliser le champs options )' => 'html',
+                    'Champ Texte' => 'text',
                     'Zone de texte' => 'textarea',
                     'Nombre' => 'nb',
                     'Choix simple' => 'choice',
