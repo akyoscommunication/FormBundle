@@ -166,7 +166,7 @@ class ContactFormFieldType extends AbstractType
                                 'value'    => $value,
                                 'class' => 'form-control js-select2'
                             ),
-                            'data' => $value,
+                            'data' => (array)$value,
                             'multiple' => true,
                             'choices' => $array,
                             'choice_value' => function ($value) {

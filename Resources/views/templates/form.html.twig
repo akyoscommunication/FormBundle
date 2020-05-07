@@ -2,7 +2,7 @@
 
 {% block contactform_row %}
     <div class="form-group {{ attr['row_attr'] }}">
-        {{ form_label(form) }}
+        {{ form_label(form, null, {'label_attr': {'class': 'col-sm-12'}}) }}
         {{ form_errors(form) }}
         {{ form_widget(form) }}
         {{ form_help(form) }}
@@ -11,7 +11,7 @@
 
 {% block form_row %}
     <div class="form-group {{ attr['row_attr'] }}">
-        {{ form_label(form) }}
+        {{ form_label(form, null, {'label_attr': {'class': 'col-sm-12'}}) }}
         {{ form_errors(form) }}
         {{ form_widget(form) }}
         {{ form_help(form) }}
