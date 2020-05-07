@@ -8,11 +8,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -42,6 +40,18 @@ class ContactFormFieldType extends AbstractType
             $labels = ($this->labels ? $title : false );
 
             switch ($field->getType()) {
+
+                case 'html':
+                    $builder
+                        ->add($slug, TextType::class, array(
+                            'attr'              => array(
+                                'value'    => $opt,
+                                'row_attr'    => 'col-md-'.$col,
+                            ),
+                            'block_prefix' => 'html_text',
+                        ))
+                    ;
+                    break;
 
                 case 'textarea':
                     $builder
@@ -196,20 +206,19 @@ class ContactFormFieldType extends AbstractType
                     break;
 
                 case 'hidden':
-                    $builder
-                        ->add($slug, HiddenType::class, array(
-                            'attr'              => array(
-                                'placeholder'       => $placeholder,
-                                'row_attr'    => 'col-md-'.$col,
-                                'value'    => $value,
-                            ),
-                            'block_prefix' => 'contactform',
-                            'label'                 => $labels,
-                            'required'              => $required,
-                        ))
-                    ;
-                    break;
-
+                $builder
+                    ->add($slug, HiddenType::class, array(
+                        'attr'              => array(
+                            'placeholder'       => $placeholder,
+                            'row_attr'    => 'col-md-'.$col,
+                            'value'    => $value,
+                        ),
+                        'block_prefix' => 'contactform',
+                        'label'                 => $labels,
+                        'required'              => $required,
+                    ))
+                ;
+                break;
 
                 default:
                     $builder
