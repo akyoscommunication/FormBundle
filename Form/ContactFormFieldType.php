@@ -168,6 +168,10 @@ class ContactFormFieldType extends AbstractType
                             }
                         }
                     }
+                    
+                    if(!is_array($value)) {
+                    	$value = [$value];
+					}
 
                     $builder
                         ->add($slug, ChoiceType::class, array(
