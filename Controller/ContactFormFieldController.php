@@ -8,10 +8,15 @@ use Akyos\FormBundle\Form\ContactFormFieldType;
 use Akyos\FormBundle\Form\NewContactFormFieldType;
 use Akyos\FormBundle\Repository\ContactFormRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\UrlHelper;
+use Symfony\Component\HttpFoundation\File\File;
+
 
 /**
  * @Route("/admin/contact/form/field", name="contact_form_field_")
@@ -22,13 +27,15 @@ class ContactFormFieldController extends AbstractController
     protected $request;
     protected $mailer;
     protected $coreOptionsRepository;
+    protected $urlHelper;
 
-    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer, CoreOptionsRepository $coreOptionsRepository)
+    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer, CoreOptionsRepository $coreOptionsRepository, UrlHelper $urlHelper)
     {
         $this->contactFormRepository = $contactFormRepository;
         $this->request = $request;
         $this->mailer = $mailer;
         $this->coreOptionsRepository = $coreOptionsRepository;
+        $this->urlHelper = $urlHelper;
     }
 
     /**
@@ -92,8 +99,14 @@ class ContactFormFieldController extends AbstractController
 
         if ($form_email->isSubmitted() && $form_email->isValid()) {
             $result = $contactform->getMail();
+            $files=[];
             foreach ( $contactform->getContactFormFields() as $field ) {
                 $data = $form_email->get($field->getSlug())->getData();
+                if($field->getType() == "file"){
+                    if($data){
+                        $files[] = $data;
+                    }
+                }
                 if(is_array($data)) {
                     $data = implode(',', $data);
                 }
@@ -123,9 +136,14 @@ class ContactFormFieldController extends AbstractController
                     ]), 'text/html'
                 );
 
+            if(!empty($files)){
+                foreach ($files as $file){
+                    $message->attach(\Swift_Attachment::fromPath($file->getRealPath())->setFilename($file->getClientOriginalName()));
+                }
+            }
             try {
                 $this->mailer->send($message);
-                $this->addFlash('success', 'Votre message à bien été envoyé.');
+                $this->addFlash('success', 'Votre message a bien été envoyé.');
             } catch (\Exception $e) {
                 $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.");
             }

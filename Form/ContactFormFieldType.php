@@ -4,6 +4,7 @@ namespace Akyos\FormBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -13,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ContactFormFieldType extends AbstractType
 {
@@ -195,6 +197,8 @@ class ContactFormFieldType extends AbstractType
                     break;
 
                 case 'checkbox':
+                    $labels = $opt ?? $labels;
+
                     $builder
                         ->add($slug, CheckboxType::class, array(
                             'attr'              => array(
@@ -210,19 +214,48 @@ class ContactFormFieldType extends AbstractType
                     break;
 
                 case 'hidden':
-                $builder
-                    ->add($slug, HiddenType::class, array(
-                        'attr'              => array(
-                            'placeholder'       => $placeholder,
-                            'row_attr'    => 'col-md-'.$col,
-                            'value'    => $value,
-                        ),
-                        'block_prefix' => 'contactform',
-                        'label'                 => $labels,
-                        'required'              => $required,
-                    ))
-                ;
-                break;
+                    $builder
+                        ->add($slug, HiddenType::class, array(
+                            'attr'              => array(
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
+                            ),
+                            'block_prefix' => 'contactform',
+                            'label'                 => $labels,
+                            'required'              => $required,
+                        ))
+                    ;
+                    break;
+
+                case 'file':
+                    $builder
+                        ->add($slug, FileType::class, array(
+                            'attr'              => array(
+                                'placeholder'       => $placeholder,
+                                'row_attr'    => 'col-md-'.$col,
+                                'value'    => $value,
+                            ),
+                            'block_prefix' => 'contactform',
+                            'label'                 => $labels,
+                            'required'              => $required,
+                            'constraints' => [
+                                new File([
+                                    'maxSize' => '5024k',
+                                    'mimeTypes' => [
+                                        'image/jpeg',
+                                        'image/png',
+                                        'image/gif',
+                                        'application/pdf',
+                                        'application/x-pdf',
+                                        'image/x-icon',
+                                    ],
+                                    'mimeTypesMessage' => 'Téléchargez un format valide',
+                                ])
+                            ],
+                        ))
+                    ;
+                    break;
 
                 default:
                     $builder

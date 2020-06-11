@@ -40,7 +40,8 @@ class NewContactFormFieldType extends AbstractType
                     'Téléphone' => 'tel',
                     'Email' => 'mail',
                     'Case à cocher' => 'checkbox',
-                    'Hidden' => 'hidden'
+                    'Hidden' => 'hidden',
+                    'Fichier' => 'file'
                 ),
                 'label' => 'Type du champ',
             ])
