@@ -1,0 +1,43 @@
+{
+  "name": "akyos/form-bundle",
+  "description": "AkyosCMS for Symfony - Form",
+  "type": "symfony-bundle",
+  "require": {
+    "php": "^7.2"
+  },
+  "require-dev": {
+  },
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Lilian Carneau",
+      "email": "lilian@akyos.com"
+    },
+    {
+      "name": "Johan JOULKVA",
+      "email": "johan@akyos.com"
+    },
+    {
+      "name": "Thomas Sebert",
+      "email": "thomas@akyos.com"
+    }
+  ],
+  "scripts": {
+    "after-install-dependencies": [
+      "echo 'builder:' >> routes.yaml",
+      "echo '  resource: '../lib/FormBundle/Controller/'' >> routes.yaml",
+      "echo '  type:     annotation' >> routes.yaml,",
+      "php bin/console asset:install --symlink",
+      "composer dump-autoload",
+      "php bin/console make:migration",
+      "php bin/console doctrine:migrations:migrate",
+      "php bin/console doctrine:fixtures:load"
+    ]
+  },
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Akyos\\FormBundle\\": ""
+    }
+  }
+}
