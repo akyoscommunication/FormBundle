@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "after-install-dependencies": [
-      "echo 'builder:' >> routes.yaml",
+      "echo 'contact_form:' >> routes.yaml",
       "echo '  resource: '../lib/FormBundle/Controller/'' >> routes.yaml",
       "echo '  type:     annotation' >> routes.yaml,",
       "php bin/console asset:install --symlink",
