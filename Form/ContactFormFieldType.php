@@ -38,7 +38,7 @@ class ContactFormFieldType extends AbstractType
             $opt = (array_key_exists($slug, $this->dynamicValues) and isset($this->dynamicValues[$slug]['options'])) ? $this->dynamicValues[$slug]['options'] : $field->getOptions();
 
             $value = (array_key_exists($slug, $this->dynamicValues) and isset($this->dynamicValues[$slug]['value'])) ? $this->dynamicValues[$slug]['value'] : '';
-            $placeholder = ($opt ? $opt.($required ? '*' : '') : $title.($required ? '*' : ''));
+            $placeholder = ucfirst($opt ? $opt.($required ? ' *' : '') : $title.($required ? ' *' : ''));
             $labels = ($this->labels ? $title : false );
 
             switch ($field->getType()) {

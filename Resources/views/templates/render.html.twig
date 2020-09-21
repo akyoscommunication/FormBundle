@@ -19,11 +19,11 @@
 <div class="aky-contact-form">
     <div class="flashbag">{{ _self.render_flashbag() }}</div>
     {{ form_start(form_email) }}
-    {{ form_widget(form_email, { 'attr' : { 'class' : 'row'}}) }}
-    <div class="form-submit-container">
-        <div class="form-submit">
-            <button class="btn form-submit__link">{{ button_label|default('Envoyer') }}</button>
+        {{ form_widget(form_email, { 'attr' : { 'class' : 'row'}}) }}
+        <div class="form-submit-container">
+            <div class="form-submit">
+                <button class="btn form-submit__link g-recaptcha">{{ button_label|default('Envoyer') }}</button>
+            </div>
         </div>
-    </div>
     {{ form_end(form_email) }}
 </div>
