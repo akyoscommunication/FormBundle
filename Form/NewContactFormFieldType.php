@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -52,6 +53,10 @@ class NewContactFormFieldType extends AbstractType
                     'min' => '1',
                     'max' => '12',
                 ]
+            ])
+            ->add('excludeRegex', TextType::class, [
+                'label' => "Regex: exclusion",
+                'help' => "Mettres les mots/bout de mots séparé par un |. Si le champs content un de ces mots, n'envoie pas le mail.",
             ])
             ->add('isRequired', null, [
                 'label' => 'Le champ est-il requis ?',

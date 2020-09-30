@@ -100,8 +100,20 @@ class ContactFormFieldController extends AbstractController
         if ($form_email->isSubmitted() && $form_email->isValid()) {
             $result = $contactform->getMail();
             $files=[];
+            $sendMail = true;
+
+            /** @var ContactFormField $field */
             foreach ( $contactform->getContactFormFields() as $field ) {
                 $data = $form_email->get($field->getSlug())->getData();
+                dump($field->getExcludeRegex());
+
+                if($field->getExcludeRegex()) {
+                    $regex = '/'.$field->getExcludeRegex().'/';
+                    if (preg_match($regex, $data)) {
+                        $sendMail = false;
+                    }
+                }
+
                 if($field->getType() == "file"){
                     if($data){
                         $files[] = $data;
@@ -141,11 +153,15 @@ class ContactFormFieldController extends AbstractController
                     $message->attach(\Swift_Attachment::fromPath($file->getRealPath())->setFilename($file->getClientOriginalName()));
                 }
             }
-            try {
-                $this->mailer->send($message);
-                $this->addFlash('success', 'Votre message a bien été envoyé.');
-            } catch (\Exception $e) {
-                $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.");
+            if($sendMail) {
+                try {
+                    $this->mailer->send($message);
+                    $this->addFlash('success', 'Votre message a bien été envoyé.');
+                } catch (\Exception $e) {
+                    $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.");
+                }
+            } else {
+                $this->addFlash('danger', "Les informations du formulaire ne sont pas bonnes.");
             }
         }
 

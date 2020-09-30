@@ -58,6 +58,11 @@ class ContactFormField
      */
     private $options;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $excludeRegex;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -160,6 +165,18 @@ class ContactFormField
     public function setOptions(?string $options): self
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    public function getExcludeRegex(): ?string
+    {
+        return $this->excludeRegex;
+    }
+
+    public function setExcludeRegex(?string $excludeRegex): self
+    {
+        $this->excludeRegex = $excludeRegex;
 
         return $this;
     }
