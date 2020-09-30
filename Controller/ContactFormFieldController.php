@@ -105,7 +105,6 @@ class ContactFormFieldController extends AbstractController
             /** @var ContactFormField $field */
             foreach ( $contactform->getContactFormFields() as $field ) {
                 $data = $form_email->get($field->getSlug())->getData();
-                dump($field->getExcludeRegex());
 
                 if($field->getExcludeRegex()) {
                     $regex = '/'.$field->getExcludeRegex().'/';
