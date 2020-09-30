@@ -29,7 +29,13 @@ class ContactFormFieldController extends AbstractController
     protected $coreOptionsRepository;
     protected $urlHelper;
 
-    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, \Swift_Mailer $mailer, CoreOptionsRepository $coreOptionsRepository, UrlHelper $urlHelper)
+    public function __construct(
+        ContactFormRepository $contactFormRepository,
+        RequestStack $request,
+        \Swift_Mailer $mailer,
+        CoreOptionsRepository $coreOptionsRepository,
+        UrlHelper $urlHelper
+    )
     {
         $this->contactFormRepository = $contactFormRepository;
         $this->request = $request;
@@ -85,10 +91,16 @@ class ContactFormFieldController extends AbstractController
     {
         $contactform = $this->contactFormRepository->find($idForm);
 
+        $coreOptions = $this->coreOptionsRepository->findAll();
+        if($coreOptions) {
+            $coreOptions = $coreOptions[0];
+        }
+
         $form_email = $this->get('form.factory')->createNamedBuilder($formName, ContactFormFieldType::class, null, array(
             'fields' => $contactform->getContactFormFields(),
             'labels' => $labels,
-            'dynamicValues' => $dynamicValues
+            'dynamicValues' => $dynamicValues,
+            'site_key' => $coreOptions->getRecaptchaPublicKey()
         ))->getForm();
 
         $object = ( $object != null ? $object : $contactform->getFormObject() );
@@ -125,11 +137,6 @@ class ContactFormFieldController extends AbstractController
                 $object = str_replace('['.$field->getSlug().']', $data, $object);
             }
 
-            $coreOptions = $this->coreOptionsRepository->findAll();
-            if($coreOptions) {
-                $coreOptions = $coreOptions[0];
-            }
-
             $host = $this->request->getCurrentRequest()->getHost();
             $host = explode('.', $host);
             if ((count($host) > 2) && ($host[0] === 'www')) {
@@ -160,7 +167,7 @@ class ContactFormFieldController extends AbstractController
                     $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.");
                 }
             } else {
-                $this->addFlash('danger', "Les informations du formulaire ne sont pas bonnes.");
+                $this->addFlash('danger', "Le formulaire n'est pas valide, veuillez vérifier votre saisie et réessayer.");
             }
         }
 
