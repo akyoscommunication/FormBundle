@@ -100,7 +100,6 @@ class ContactFormFieldController extends AbstractController
             'fields' => $contactform->getContactFormFields(),
             'labels' => $labels,
             'dynamicValues' => $dynamicValues,
-            'site_key' => $coreOptions->getRecaptchaPublicKey()
         ))->getForm();
 
         $object = ( $object != null ? $object : $contactform->getFormObject() );

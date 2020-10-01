@@ -2,6 +2,7 @@
 
 namespace Akyos\FormBundle\Form;
 
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -275,14 +276,10 @@ class ContactFormFieldType extends AbstractType
             }
         }
 
-        $siteKey = $options['site_key'];
-        if ($siteKey) {
-            $builder->add('captcha', Recaptcha3Type::class, [
-                'constraints' => new Recaptcha3(),
-                'action_name' => 'form',
-                'site_key' => $siteKey,
-            ]);
-        }
+        $builder->add('captcha', Recaptcha3Type::class, [
+            'constraints' => new Recaptcha3(),
+            'action_name' => 'form',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -291,7 +288,6 @@ class ContactFormFieldType extends AbstractType
             'fields' => null,
             'dynamicValues' => [],
             'labels' => true,
-            'site_key' => null,
             'allow_extra_fields' => true,
         ]);
     }
