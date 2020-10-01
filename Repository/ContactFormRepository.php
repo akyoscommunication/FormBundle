@@ -4,7 +4,7 @@ namespace Akyos\FormBundle\Repository;
 
 use Akyos\FormBundle\Entity\ContactForm;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method ContactForm|null find($id, $lockMode = null, $lockVersion = null)
