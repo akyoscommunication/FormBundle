@@ -29,11 +29,14 @@ class FormController extends AbstractController
      */
     public function index(ContactFormRepository $contactFormRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $els = $paginator->paginate(
-            $contactFormRepository->findAll(),
-            $request->query->getInt('page', 1),
-            12
-        );
+        $query = $contactFormRepository->createQueryBuilder('a');
+        if($request->query->get('search')) {
+            $query
+                ->andWhere('a.title LIKE :keyword OR a.slug LIKE :keyword OR a.formTo LIKE :keyword')
+                ->setParameter('keyword', '%'.$request->query->get('search').'%')
+            ;
+        }
+        $els = $paginator->paginate($query->getQuery(), $request->query->getInt('page',1),12);
 
         return $this->render('@AkyosCore/crud/index.html.twig', [
             'els' => $els,
