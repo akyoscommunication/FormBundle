@@ -26,9 +26,10 @@ class ContactFormSubmissionController extends AbstractController
     public function index(ContactFormSubmissionRepository $contactFormSubmissionRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $query = $contactFormSubmissionRepository->createQueryBuilder('a');
+        $query->innerJoin('a.contactForm', 'contactForm');
         if($request->query->get('search')) {
             $query
-                ->andWhere('a.title LIKE :keyword OR a.slug LIKE :keyword OR a.formTo LIKE :keyword')
+                ->andWhere('contactForm.title LIKE :keyword OR a.sentTo LIKE :keyword OR a.object LIKE :keyword')
                 ->setParameter('keyword', '%'.$request->query->get('search').'%')
             ;
         }
@@ -40,6 +41,7 @@ class ContactFormSubmissionController extends AbstractController
             'entity' => 'ContactFormSubmission',
             'route' => 'contact_form_submission',
             'button_add' => false,
+            'search' => true,
             'fields' => array(
                 'ID' => 'Id',
                 'Formulaire' => 'contactForm',
