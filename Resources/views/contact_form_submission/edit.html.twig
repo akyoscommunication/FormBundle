@@ -4,7 +4,7 @@
 
 {% block page_content %}
 
-    {% include '@AkyosCore/crud/elements/_header.html.twig' with {'title': 'Éditer '~title, 'parameters': (parameters is defined ? parameters : {}), 'button_back': true, 'header_route' : header_route is defined ? header_route : null} %}
+    {% include '@AkyosCore/crud/elements/_header.html.twig' with {'title': 'Détail de l\'envoi', 'parameters': (parameters is defined ? parameters : {}), 'button_back': true, 'header_route' : header_route is defined ? header_route : null} %}
 
     <div class="content" style="width: 100% !important" data-type="{{ entity is defined ? entity : '' }}" data-typeid="{{ el.id is defined ? el.id : '' }}">
         <div class="row">
@@ -42,6 +42,7 @@
                             {{ form_widget(form) }}
                             {{ form_end(form) }}
                             <div class="preview">
+                                <p>Formulaire: {{ el.contactForm.title }}</p>
                                 <p>Mail envoyé le {{ el.createdAt|date('d/m/Y à H:i') }} :</p>
                                 <div style="border: 1px solid black;">{{ el.body|raw }}</div>
                             </div>

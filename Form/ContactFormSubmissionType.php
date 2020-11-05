@@ -16,13 +16,6 @@ class ContactFormSubmissionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('contactForm', EntityType::class, [
-                'label' => 'Formulaire',
-                'class' => ContactForm::class,
-                'choice_label' => function(ContactForm $value) {
-                    return $value->getTitle();
-                }
-            ])
             ->add('sentFrom', TextType::class, [
                 'label' => 'Expéditeur'
             ])
