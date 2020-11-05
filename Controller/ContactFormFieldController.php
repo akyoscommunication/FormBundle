@@ -4,19 +4,19 @@ namespace Akyos\FormBundle\Controller;
 
 use Akyos\CoreBundle\Repository\CoreOptionsRepository;
 use Akyos\FormBundle\Entity\ContactFormField;
+use Akyos\FormBundle\Entity\ContactFormSubmission;
+use Akyos\FormBundle\Entity\ContactFormSubmissionValue;
 use Akyos\FormBundle\Form\ContactFormFieldType;
 use Akyos\FormBundle\Form\NewContactFormFieldType;
 use Akyos\FormBundle\Repository\ContactFormRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\UrlHelper;
-use Symfony\Component\HttpFoundation\File\File;
-
 
 /**
  * @Route("/admin/contact/form/field", name="contact_form_field_")
@@ -28,13 +28,15 @@ class ContactFormFieldController extends AbstractController
     protected $mailer;
     protected $coreOptionsRepository;
     protected $urlHelper;
+    protected $entityManager;
 
     public function __construct(
         ContactFormRepository $contactFormRepository,
         RequestStack $request,
         \Swift_Mailer $mailer,
         CoreOptionsRepository $coreOptionsRepository,
-        UrlHelper $urlHelper
+        UrlHelper $urlHelper,
+        EntityManagerInterface $entityManager
     )
     {
         $this->contactFormRepository = $contactFormRepository;
@@ -42,6 +44,7 @@ class ContactFormFieldController extends AbstractController
         $this->mailer = $mailer;
         $this->coreOptionsRepository = $coreOptionsRepository;
         $this->urlHelper = $urlHelper;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -112,10 +115,16 @@ class ContactFormFieldController extends AbstractController
             $result = $contactform->getMail();
             $files=[];
             $sendMail = true;
+            $contactFormSubmission = new ContactFormSubmission();
+            $contactFormSubmission->setContactForm($contactform);
+            $contactFormSubmissionFiles = [];
 
             /** @var ContactFormField $field */
             foreach ( $contactform->getContactFormFields() as $field ) {
                 $data = $form_email->get($field->getSlug())->getData();
+                $contactFormSubmissionValue = new ContactFormSubmissionValue();
+                $contactFormSubmissionValue->setContactFormSubmission($contactFormSubmission);
+                $contactFormSubmissionValue->setContactFormField($field);
 
                 if($field->getExcludeRegex()) {
                     $regex = '/'.$field->getExcludeRegex().'/';
@@ -124,16 +133,35 @@ class ContactFormFieldController extends AbstractController
                     }
                 }
 
-                if($field->getType() == "file"){
+                if($field->getType() === "file") {
                     if($data){
                         $files[] = $data;
+                        $originalFilename = pathinfo($data->getClientOriginalName(), PATHINFO_FILENAME);
+                        $safeFilename = str_replace(' ', '', trim(htmlspecialchars($originalFilename)));
+                        $newFilename = $safeFilename.'-'.uniqid('', true).'.'.$data->guessExtension();
+                        try {
+                            $data->move(
+                                $this->getParameter('contact_form_files_directory'),
+                                $newFilename
+                            );
+                            $contactFormSubmissionFiles[] = $this->getParameter('contact_form_files_directory').$newFilename;
+                            $contactFormSubmissionValue->setValue($this->getParameter('contact_form_files_directory').$newFilename);
+                        } catch (FileException $e) {
+                            $sendMail = false;
+                        }
                     }
                 }
+
                 if(is_array($data)) {
                     $data = implode(',', $data);
                 }
                 $result = str_replace('['.$field->getSlug().']', $data, $result);
                 $object = str_replace('['.$field->getSlug().']', $data, $object);
+
+                if($field->getType() !== "file") {
+                    $contactFormSubmissionValue->setValue($data);
+                }
+                $this->entityManager->persist($contactFormSubmissionValue);
             }
 
             $host = $this->request->getCurrentRequest()->getHost();
@@ -144,14 +172,22 @@ class ContactFormFieldController extends AbstractController
                 $host = implode('.', $host);
             }
 
+            $body = $this->renderView($template, [
+                'result' => $result,
+                'form' => $contactform
+            ]);
+
             $message = (new \Swift_Message($object))
                 ->setFrom(['noreply@'.$host => ($coreOptions ? $coreOptions->getSiteTitle() : 'noreply')])
                 ->setTo($to)
-                ->setBody($this->renderView($template, [
-                        'result' => $result,
-                        'form' => $contactform
-                    ]), 'text/html'
-                );
+                ->setBody($body, 'text/html')
+            ;
+
+            $contactFormSubmission->setObject($object);
+            $contactFormSubmission->setSentFrom('noreply@'.$host);
+            $contactFormSubmission->setSentTo(implode(',', $to));
+            $contactFormSubmission->setBody($body);
+            $contactFormSubmission->setFiles($contactFormSubmissionFiles);
 
             if(!empty($files)){
                 foreach ($files as $file){
@@ -161,9 +197,11 @@ class ContactFormFieldController extends AbstractController
             if($sendMail) {
                 try {
                     $this->mailer->send($message);
+                    $this->entityManager->persist($contactFormSubmission);
+                    $this->entityManager->flush();
                     $this->addFlash('success', 'Votre message a bien été envoyé.');
                 } catch (\Exception $e) {
-                    $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.");
+                    $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.".$e);
                 }
             } else {
                 $this->addFlash('danger', "Le formulaire n'est pas valide, veuillez vérifier votre saisie et réessayer.");

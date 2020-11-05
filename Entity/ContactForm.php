@@ -57,9 +57,15 @@ class ContactForm
      */
     private $template;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ContactFormSubmission::class, mappedBy="contactForm")
+     */
+    private $contactFormSubmissions;
+
     public function __construct()
     {
         $this->contactFormFields = new ArrayCollection();
+        $this->contactFormSubmissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -171,6 +177,36 @@ class ContactForm
     public function setTemplate(?string $template): self
     {
         $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ContactFormSubmission[]
+     */
+    public function getContactFormSubmissions(): Collection
+    {
+        return $this->contactFormSubmissions;
+    }
+
+    public function addContactFormSubmission(ContactFormSubmission $contactFormSubmission): self
+    {
+        if (!$this->contactFormSubmissions->contains($contactFormSubmission)) {
+            $this->contactFormSubmissions[] = $contactFormSubmission;
+            $contactFormSubmission->setContactForm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactFormSubmission(ContactFormSubmission $contactFormSubmission): self
+    {
+        if ($this->contactFormSubmissions->removeElement($contactFormSubmission)) {
+            // set the owning side to null (unless already changed)
+            if ($contactFormSubmission->getContactForm() === $this) {
+                $contactFormSubmission->setContactForm(null);
+            }
+        }
 
         return $this;
     }

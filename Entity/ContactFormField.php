@@ -2,6 +2,8 @@
 
 namespace Akyos\FormBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -62,6 +64,16 @@ class ContactFormField
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $excludeRegex;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ContactFormSubmissionValue::class, mappedBy="contactFormField")
+     */
+    private $contactFormSubmissionValues;
+
+    public function __construct()
+    {
+        $this->contactFormSubmissionValues = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -177,6 +189,36 @@ class ContactFormField
     public function setExcludeRegex(?string $excludeRegex): self
     {
         $this->excludeRegex = $excludeRegex;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ContactFormSubmissionValue[]
+     */
+    public function getContactFormSubmissionValues(): Collection
+    {
+        return $this->contactFormSubmissionValues;
+    }
+
+    public function addContactFormSubmissionValue(ContactFormSubmissionValue $contactFormSubmissionValue): self
+    {
+        if (!$this->contactFormSubmissionValues->contains($contactFormSubmissionValue)) {
+            $this->contactFormSubmissionValues[] = $contactFormSubmissionValue;
+            $contactFormSubmissionValue->setContactFormField($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactFormSubmissionValue(ContactFormSubmissionValue $contactFormSubmissionValue): self
+    {
+        if ($this->contactFormSubmissionValues->removeElement($contactFormSubmissionValue)) {
+            // set the owning side to null (unless already changed)
+            if ($contactFormSubmissionValue->getContactFormField() === $this) {
+                $contactFormSubmissionValue->setContactFormField(null);
+            }
+        }
 
         return $this;
     }

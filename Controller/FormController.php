@@ -83,6 +83,7 @@ class FormController extends AbstractController
      * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
      * @param Request $request
      * @param ContactForm $contactForm
+     * @param ContactFormFieldRepository $contactFormFieldRepository
      * @return Response
      */
     public function edit(Request $request, ContactForm $contactForm, ContactFormFieldRepository $contactFormFieldRepository): Response
