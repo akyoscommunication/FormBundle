@@ -2,13 +2,17 @@
 
 namespace Akyos\FormBundle\Controller;
 
+use Akyos\FormBundle\Entity\ContactForm;
 use Akyos\FormBundle\Entity\ContactFormSubmission;
+use Akyos\FormBundle\Form\ContactFormSubmissionExportType;
 use Akyos\FormBundle\Form\ContactFormSubmissionType;
+use Akyos\FormBundle\Repository\ContactFormRepository;
 use Akyos\FormBundle\Repository\ContactFormSubmissionRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -17,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContactFormSubmissionController extends AbstractController
 {
     /**
-     * @Route("/", name="index", methods={"GET"})
+     * @Route("/", name="index")
      * @param ContactFormSubmissionRepository $contactFormSubmissionRepository
      * @param PaginatorInterface $paginator
      * @param Request $request
@@ -25,6 +29,15 @@ class ContactFormSubmissionController extends AbstractController
      */
     public function index(ContactFormSubmissionRepository $contactFormSubmissionRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $exportForm = $this->createForm(ContactFormSubmissionExportType::class);
+
+        $exportForm->handleRequest($request);
+        if($exportForm->isSubmitted() && $exportForm->isValid()) {
+            /** @var ContactForm $contactForm */
+            $contactForm = $exportForm->get('contactForm')->getData();
+            return $this->generateCsv($contactForm, $contactFormSubmissionRepository);
+        }
+
         $query = $contactFormSubmissionRepository->createQueryBuilder('a');
         $query->innerJoin('a.contactForm', 'contactForm');
         if($request->query->get('search')) {
@@ -35,7 +48,7 @@ class ContactFormSubmissionController extends AbstractController
         }
         $els = $paginator->paginate($query->getQuery(), $request->query->getInt('page',1),12);
 
-        return $this->render('@AkyosCore/crud/index.html.twig', [
+        return $this->render('@AkyosForm/contact_form_submission/index.html.twig', [
             'els' => $els,
             'title' => 'Formulaire envoyés',
             'entity' => 'ContactFormSubmission',
@@ -48,6 +61,7 @@ class ContactFormSubmissionController extends AbstractController
                 'Destinataire' => 'sentTo',
                 'Objet' => 'object',
             ),
+            'exportForm' => $exportForm->createView()
         ]);
     }
 
@@ -91,5 +105,55 @@ class ContactFormSubmissionController extends AbstractController
         }
 
         return $this->redirectToRoute('contact_form_submission_index');
+    }
+
+    public function generateCsv(ContactForm $contactForm, ContactFormSubmissionRepository $contactFormSubmissionRepository) {
+        $contactFormSubmissions = $contactFormSubmissionRepository->findBy(['contactForm' => $contactForm]);
+        $response = new StreamedResponse();
+        $csvColumns = [
+            'ID',
+            'Formulaire',
+            'Destinataire',
+            'Expéditeur',
+            'Objet',
+            'Date d\'envoi',
+        ];
+        foreach ($contactForm->getContactFormFields() as $contactFormField) {
+            $csvColumns[] = $contactFormField->getTitle();
+        }
+        $response->setCallback(function() use($contactFormSubmissions, $csvColumns) {
+            $handle = fopen('php://output', 'wb+');
+            fputcsv($handle, $csvColumns, ';');
+
+            foreach ($contactFormSubmissions as $contactFormSubmission) {
+                /** @var ContactFormSubmission $contactFormSubmission */
+
+                $lineContent = [
+                    $contactFormSubmission->getId(),
+                    $contactFormSubmission->getContactForm()->getTitle(),
+                    $contactFormSubmission->getSentTo(),
+                    $contactFormSubmission->getSentFrom(),
+                    $contactFormSubmission->getObject(),
+                    date_format($contactFormSubmission->getCreatedAt(), 'd/m/Y'),
+                ];
+                foreach ($csvColumns as $column) {
+                    foreach ($contactFormSubmission->getContactFormSubmissionValues() as $value) {
+                        if($value->getContactFormField()->getTitle() === $column) {
+                            $lineContent[] = $value->getValue();
+                        }
+                    }
+                }
+
+                fputcsv($handle,$lineContent,';');
+            }
+
+            fclose($handle);
+        });
+
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Type', 'application/force-download; charset=utf-8');
+        $response->headers->set('Content-Disposition','attachment; filename=Formulaire_'.$contactForm->getSlug().'.csv');
+
+        return $response;
     }
 }
