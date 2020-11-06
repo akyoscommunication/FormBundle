@@ -90,12 +90,8 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null, $formName = null, $template = null, $formTemplate = null): Response
+    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null, $formName = 'contact_form', $template = null, $formTemplate = null): Response
     {
-        if(!$formName) {
-            $formName = uniqid('contact_form', false);
-        }
-
         $contactform = $this->contactFormRepository->find($idForm);
 
         $coreOptions = $this->coreOptionsRepository->findAll();
@@ -112,7 +108,6 @@ class ContactFormFieldController extends AbstractController
         $object = ( $object != null ? $object : $contactform->getFormObject() );
         $to = explode(',', ( $to != null ? $to : $contactform->getFormTo() ));
         $template = ( $template != null ? $template : ( $contactform->getTemplate() ? 'emails/'.$contactform->getTemplate().'.html.twig' : '@AkyosForm/templates/email/default.html.twig' ) );
-
         $form_email->handleRequest($this->request->getCurrentRequest());
 
         if ($form_email->isSubmitted() && $form_email->isValid()) {
