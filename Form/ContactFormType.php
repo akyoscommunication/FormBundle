@@ -38,6 +38,9 @@ class ContactFormType extends AbstractType
                 'label'    => 'Email'
             ])
             ->add('template', null, [
+                'label'    => 'Template du mail',
+            ])
+            ->add('formTemplate', null, [
                 'label'    => 'Template du formulaire',
             ])
         ;

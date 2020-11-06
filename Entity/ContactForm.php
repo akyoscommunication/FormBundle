@@ -62,6 +62,11 @@ class ContactForm
      */
     private $contactFormSubmissions;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $formTemplate;
+
     public function __construct()
     {
         $this->contactFormFields = new ArrayCollection();
@@ -207,6 +212,18 @@ class ContactForm
                 $contactFormSubmission->setContactForm(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFormTemplate(): ?string
+    {
+        return $this->formTemplate;
+    }
+
+    public function setFormTemplate(?string $formTemplate): self
+    {
+        $this->formTemplate = $formTemplate;
 
         return $this;
     }

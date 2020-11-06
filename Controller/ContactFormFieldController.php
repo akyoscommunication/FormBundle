@@ -90,8 +90,12 @@ class ContactFormFieldController extends AbstractController
         ]);
     }
 
-    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null, $formName = 'contactForm', $template = null): Response
+    public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null, $formName = null, $template = null, $formTemplate = null): Response
     {
+        if(!$formName) {
+            $formName = uniqid('contact_form', false);
+        }
+
         $contactform = $this->contactFormRepository->find($idForm);
 
         $coreOptions = $this->coreOptionsRepository->findAll();
@@ -212,7 +216,9 @@ class ContactFormFieldController extends AbstractController
             $this->addFlash('warning', "Le formulaire n'est pas valide, veuillez vérifier votre saisie et réessayer.");
         }
 
-        return $this->render('@AkyosForm/templates/render.html.twig', [
+        $formTemplate = ( $formTemplate != null ? $formTemplate : ( $contactform->getFormTemplate() ? 'forms/'.$contactform->getFormTemplate().'.html.twig' : '@AkyosForm/templates/render.html.twig' ) );
+
+        return $this->render($formTemplate, [
             'button_label' => $button_label,
             'form_email' => $form_email->createView(),
         ]);
