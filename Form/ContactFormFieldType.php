@@ -45,8 +45,6 @@ class ContactFormFieldType extends AbstractType
             $placeholder = ucfirst($opt ? $opt.($required ? ' *' : '') : $title.($required ? ' *' : ''));
             $labels = ($this->labels ? $title : false );
 
-            dump($class);
-
             switch ($field->getType()) {
 
                 case 'html':
