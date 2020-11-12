@@ -61,6 +61,11 @@ class ContactFormField
     private $options;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $className;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $excludeRegex;
@@ -177,6 +182,18 @@ class ContactFormField
     public function setOptions(?string $options): self
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    public function getClassName(): ?string
+    {
+        return $this->className;
+    }
+
+    public function setClassName(?string $className): self
+    {
+        $this->className = $className;
 
         return $this;
     }

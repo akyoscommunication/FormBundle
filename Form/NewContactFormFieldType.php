@@ -30,6 +30,9 @@ class NewContactFormFieldType extends AbstractType
                 'label' => 'Options du champs ( placeholder )',
                 'help' => '( si le champs est un select, entrez vos choix dans l\'ordre séparé par des pipes ( | ). Le premier choix étant le placeholder )',
             ])
+            ->add('className', TextareaType::class, [
+                'label' => 'Classes du champs',
+            ])
             ->add('type', ChoiceType::class, [
                 'choices' => array(
                     'Texte simple ( HTMl, utiliser le champs options )' => 'html',

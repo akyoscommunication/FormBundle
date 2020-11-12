@@ -22,6 +22,7 @@ class ContactFormFieldType extends AbstractType
 {
     protected $fields;
     protected $labels;
+    protected $class;
     protected $dynamicValues;
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -38,10 +39,13 @@ class ContactFormFieldType extends AbstractType
             $col = $field->getCol();
 
             $opt = (array_key_exists($slug, $this->dynamicValues) and isset($this->dynamicValues[$slug]['options'])) ? $this->dynamicValues[$slug]['options'] : $field->getOptions();
+            $class = (array_key_exists($slug, $this->dynamicValues) and isset($this->dynamicValues[$slug]['className'])) ? $this->dynamicValues[$slug]['className'] : $field->getClassName();
 
             $value = (array_key_exists($slug, $this->dynamicValues) and isset($this->dynamicValues[$slug]['value'])) ? $this->dynamicValues[$slug]['value'] : '';
             $placeholder = ucfirst($opt ? $opt.($required ? ' *' : '') : $title.($required ? ' *' : ''));
             $labels = ($this->labels ? $title : false );
+
+            dump($class);
 
             switch ($field->getType()) {
 
@@ -50,7 +54,7 @@ class ContactFormFieldType extends AbstractType
                         ->add($slug, TextType::class, array(
                             'attr'              => array(
                                 'value'    => $opt,
-                                'row_attr'    => 'col-md-'.$col,
+                                'row_attr'    => 'col-md-'.$col.' '.$class,
                             ),
                             'block_prefix' => 'html_text',
                         ))
