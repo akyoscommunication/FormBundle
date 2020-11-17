@@ -33,7 +33,7 @@ class ContactFormSubmissionValue
     private $contactFormField;
 
     /**
-     * @ORM\Column(type="text", length=99999)
+     * @ORM\Column(type="text", length=99999, nullable=true)
      */
     private $value;
 
