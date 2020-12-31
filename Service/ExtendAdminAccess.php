@@ -4,6 +4,7 @@ namespace Akyos\FormBundle\Service;
 use Akyos\CoreBundle\Entity\AdminAccess;
 use Akyos\CoreBundle\Repository\AdminAccessRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExtendAdminAccess
 {
@@ -40,5 +41,7 @@ class ExtendAdminAccess
             $this->entityManager->persist($adminAccess);
             $this->entityManager->flush();
         }
+        return new Response('true');
+
     }
 }
