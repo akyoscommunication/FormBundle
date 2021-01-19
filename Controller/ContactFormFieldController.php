@@ -171,6 +171,11 @@ class ContactFormFieldController extends AbstractController
             } else {
                 $host = implode('.', $host);
             }
+	
+			$body = $this->renderView($template, [
+				'result' => $result,
+				'form' => $contactform
+			]);
 
             $contactFormSubmission->setObject($object);
             $contactFormSubmission->setSentFrom('noreply@'.$host);
