@@ -32,6 +32,7 @@ class NewContactFormFieldType extends AbstractType
             ])
             ->add('className', TextareaType::class, [
                 'label' => 'Classes du champs',
+                'required' => false
             ])
             ->add('type', ChoiceType::class, [
                 'choices' => array(
@@ -40,6 +41,7 @@ class NewContactFormFieldType extends AbstractType
                     'Zone de texte' => 'textarea',
                     'Nombre' => 'nb',
                     'Choix simple' => 'choice',
+                    'Choix Radio' => 'choice_radio',
                     'Choix multiple' => 'multiple_choice',
                     'Téléphone' => 'tel',
                     'Email' => 'mail',
@@ -60,6 +62,7 @@ class NewContactFormFieldType extends AbstractType
             ->add('excludeRegex', TextType::class, [
                 'label' => "Regex: exclusion",
                 'help' => "Mettres les mots/bout de mots séparé par un |. Si le champs content un de ces mots, n'envoie pas le mail.",
+                'required' => false
             ])
             ->add('isRequired', null, [
                 'label' => 'Le champ est-il requis ?',

@@ -64,7 +64,7 @@ class ContactFormFieldType extends AbstractType
                         ->add($slug, TextareaType::class, array(
                             'attr'              => array(
                                 'placeholder'       => $placeholder,
-                                'row_attr'    => 'col-md-'.$col,
+                                'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
                             ),
                             'required'    => $required,
@@ -78,7 +78,7 @@ class ContactFormFieldType extends AbstractType
                         ->add($slug, TelType::class, array(
                             'attr'              => array(
                                 'placeholder'       => $placeholder,
-                                'row_attr'    => 'col-md-'.$col,
+                                'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
@@ -93,7 +93,7 @@ class ContactFormFieldType extends AbstractType
                         ->add($slug, EmailType::class, array(
                             'attr'              => array(
                                 'placeholder'       => $placeholder,
-                                'row_attr'    => 'col-md-'.$col,
+                                'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
@@ -108,7 +108,7 @@ class ContactFormFieldType extends AbstractType
                         ->add($slug, IntegerType::class, array(
                             'attr'              => array(
                                 'placeholder'       => $placeholder,
-                                'row_attr'    => 'col-md-'.$col,
+                                'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
                             ),
                             'block_prefix' => 'contactform',
@@ -148,6 +148,46 @@ class ContactFormFieldType extends AbstractType
                             'choice_value' => function ($value)  {
                                 return $value;
                             },
+                            'placeholder'       => $opt[0],
+                            'block_prefix' => 'contactform',
+                            'label'                 => $labels,
+                            'required'              => $required,
+                        ))
+                    ;
+                    break;
+
+                case 'choice_radio':
+                    $array = [];
+
+                    $opt = explode('|', $opt);
+
+                    $fieldOptions = array_slice($opt, 1);
+                    foreach ($fieldOptions as $f) {
+                        $fieldOptionsVal = explode(';', $f);
+                        if (count($fieldOptionsVal) < 2) {
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                        } else {
+                            if ($fieldOptionsVal[1] === '') {
+                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                            } else {
+                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
+                            }
+                        }
+                    }
+
+                    $builder
+                        ->add($slug, ChoiceType::class, array(
+                            'attr'              => array(
+                                'row_attr'    => 'col-md-'.$col.' '.$class,
+                                'value'    => $value,
+                            ),
+                            'data' => $value,
+                            'choices' => $array,
+                            'choice_value' => function ($value)  {
+                                return $value;
+                            },
+                            'expanded' => true,
+                            'multiple' => false,
                             'placeholder'       => $opt[0],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
