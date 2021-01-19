@@ -3,6 +3,7 @@
 namespace Akyos\FormBundle\Controller;
 
 use Akyos\CoreBundle\Repository\CoreOptionsRepository;
+use Akyos\CoreBundle\Services\CoreMailer;
 use Akyos\FormBundle\Entity\ContactFormField;
 use Akyos\FormBundle\Entity\ContactFormSubmission;
 use Akyos\FormBundle\Entity\ContactFormSubmissionValue;
@@ -33,7 +34,7 @@ class ContactFormFieldController extends AbstractController
     public function __construct(
         ContactFormRepository $contactFormRepository,
         RequestStack $request,
-        \Swift_Mailer $mailer,
+        CoreMailer $mailer,
         CoreOptionsRepository $coreOptionsRepository,
         UrlHelper $urlHelper,
         EntityManagerInterface $entityManager
@@ -171,17 +172,6 @@ class ContactFormFieldController extends AbstractController
                 $host = implode('.', $host);
             }
 
-            $body = $this->renderView($template, [
-                'result' => $result,
-                'form' => $contactform
-            ]);
-
-            $message = (new \Swift_Message($object))
-                ->setFrom(['noreply@'.$host => ($coreOptions ? $coreOptions->getSiteTitle() : 'noreply')])
-                ->setTo($to)
-                ->setBody($body, 'text/html')
-            ;
-
             $contactFormSubmission->setObject($object);
             $contactFormSubmission->setSentFrom('noreply@'.$host);
             $contactFormSubmission->setSentTo(implode(',', $to));
@@ -189,13 +179,34 @@ class ContactFormFieldController extends AbstractController
             $contactFormSubmission->setFiles($contactFormSubmissionFiles);
 
             if(!empty($files)){
+            	$attachments = [];
                 foreach ($files as $file){
-                    $message->attach(\Swift_Attachment::fromPath($file->getRealPath())->setFilename($file->getClientOriginalName()));
+					$attachments[] = [
+                    	'path' => $file->getRealPath(),
+						'name' => $file->getClientOriginalName(),
+					];
                 }
             }
             if($sendMail) {
                 try {
-                    $this->mailer->send($message);
+					$this->mailer->sendMail(
+						$to,
+						$object,
+						'',
+						$object,
+						$template,
+						null,
+						null,
+						null,
+						null,
+						[
+							'templateParams' => [
+								'result' => $result,
+								'form' => $contactform
+							],
+							'attachments' => $attachments ? $attachments : null,
+						]
+					);
                     $this->entityManager->persist($contactFormSubmission);
                     $this->entityManager->flush();
                     $this->addFlash('success', 'Votre message a bien été envoyé.');
