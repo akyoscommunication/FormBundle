@@ -5,7 +5,6 @@ namespace Akyos\FormBundle\Form;
 use Akyos\FormBundle\Entity\ContactForm;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,14 +26,14 @@ class ContactFormType extends AbstractType
             ])
             ->add('mail', CKEditorType::class, [
                 'required'    => false,
-                'config'      => array(
+                'config'      => [
                     'placeholder'    => "Texte",
                     'height'         => 50,
                     'entities'       => false,
                     'basicEntities'  => false,
                     'entities_greek' => false,
                     'entities_latin' => false,
-                ),
+                ],
                 'label'    => 'Email'
             ])
             ->add('template', null, [

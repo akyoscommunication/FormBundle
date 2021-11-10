@@ -12,12 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContactFormSubmissionValueType extends AbstractType
 {
-    private $contactFormSubmissionValue;
-
-    public function __construct(ContactFormSubmissionValue  $contactFormSubmissionValue) {
-        $this->contactFormSubmissionValue = $contactFormSubmissionValue;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {

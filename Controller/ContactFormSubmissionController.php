@@ -3,10 +3,10 @@
 namespace Akyos\FormBundle\Controller;
 
 use Akyos\FormBundle\Entity\ContactForm;
+use Akyos\FormBundle\Entity\ContactFormField;
 use Akyos\FormBundle\Entity\ContactFormSubmission;
 use Akyos\FormBundle\Form\ContactFormSubmissionExportType;
 use Akyos\FormBundle\Form\ContactFormSubmissionType;
-use Akyos\FormBundle\Repository\ContactFormRepository;
 use Akyos\FormBundle\Repository\ContactFormSubmissionRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/contact-form-submission", name="contact_form_submission_")
@@ -57,12 +56,12 @@ class ContactFormSubmissionController extends AbstractController
             'route' => 'contact_form_submission',
             'button_add' => false,
             'search' => true,
-            'fields' => array(
+            'fields' => [
                 'ID' => 'Id',
                 'Formulaire' => 'contactForm',
                 'Destinataire' => 'sentTo',
                 'Objet' => 'object',
-            ),
+            ],
             'exportForm' => $exportForm->createView()
         ]);
     }
@@ -109,7 +108,13 @@ class ContactFormSubmissionController extends AbstractController
         return $this->redirectToRoute('contact_form_submission_index');
     }
 
-    public function generateCsv(ContactForm $contactForm, ContactFormSubmissionRepository $contactFormSubmissionRepository) {
+    /**
+     * @param ContactForm $contactForm
+     * @param ContactFormSubmissionRepository $contactFormSubmissionRepository
+     * @return StreamedResponse
+     */
+    public function generateCsv(ContactForm $contactForm, ContactFormSubmissionRepository $contactFormSubmissionRepository): StreamedResponse
+    {
         $contactFormSubmissions = $contactFormSubmissionRepository->findBy(['contactForm' => $contactForm]);
         $response = new StreamedResponse();
         $csvColumns = [
@@ -128,11 +133,11 @@ class ContactFormSubmissionController extends AbstractController
             fputcsv($handle, $csvColumns, ';');
 
             foreach ($contactFormSubmissions as $contactFormSubmission) {
-                /** @var ContactFormSubmission $contactFormSubmission */
-
+                /** @var ContactForm $contactForm */
+                $contactForm = $contactFormSubmission->getContactForm();
                 $lineContent = [
                     $contactFormSubmission->getId(),
-                    $contactFormSubmission->getContactForm()->getTitle(),
+                    $contactForm->getTitle(),
                     $contactFormSubmission->getSentTo(),
                     $contactFormSubmission->getSentFrom(),
                     $contactFormSubmission->getObject(),
@@ -140,7 +145,9 @@ class ContactFormSubmissionController extends AbstractController
                 ];
                 foreach ($csvColumns as $column) {
                     foreach ($contactFormSubmission->getContactFormSubmissionValues() as $value) {
-                        if($value->getContactFormField()->getTitle() === $column) {
+                        /** @var ContactFormField $contactFormField */
+                        $contactFormField = $value->getContactFormField();
+                        if($contactFormField->getTitle() === $column) {
                             $lineContent[] = $value->getValue();
                         }
                     }

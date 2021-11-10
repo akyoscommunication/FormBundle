@@ -2,9 +2,7 @@
 
 namespace Akyos\FormBundle\Form;
 
-use Akyos\FormBundle\Entity\ContactForm;
 use Akyos\FormBundle\Entity\ContactFormSubmission;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

@@ -230,11 +230,9 @@ class ContactFormField
 
     public function removeContactFormSubmissionValue(ContactFormSubmissionValue $contactFormSubmissionValue): self
     {
-        if ($this->contactFormSubmissionValues->removeElement($contactFormSubmissionValue)) {
-            // set the owning side to null (unless already changed)
-            if ($contactFormSubmissionValue->getContactFormField() === $this) {
-                $contactFormSubmissionValue->setContactFormField(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->contactFormSubmissionValues->removeElement($contactFormSubmissionValue) && $contactFormSubmissionValue->getContactFormField() === $this) {
+            $contactFormSubmissionValue->setContactFormField(null);
         }
 
         return $this;

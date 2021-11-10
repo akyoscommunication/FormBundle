@@ -8,8 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExtendAdminAccess
 {
-    private $adminAccessRepository;
-    private $entityManager;
+    private AdminAccessRepository $adminAccessRepository;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(AdminAccessRepository $adminAccessRepository, EntityManagerInterface $entityManager)
     {
@@ -17,9 +17,9 @@ class ExtendAdminAccess
         $this->entityManager = $entityManager;
     }
 
-    public function setDefaults()
+    public function setDefaults(): Response
     {
-        if (!$this->adminAccessRepository->findOneByName("Formulaire de contact"))
+        if (!$this->adminAccessRepository->findOneBy(['name' => 'Formulaire de contact']))
         {
             $adminAccess = new AdminAccess();
             $adminAccess
@@ -30,7 +30,8 @@ class ExtendAdminAccess
             $this->entityManager->persist($adminAccess);
             $this->entityManager->flush();
         }
-        if (!$this->adminAccessRepository->findOneByName("Formulaires envoyés"))
+
+        if (!$this->adminAccessRepository->findOneBy(['name' => 'Formulaires envoyés']))
         {
             $adminAccess = new AdminAccess();
             $adminAccess
@@ -42,6 +43,5 @@ class ExtendAdminAccess
             $this->entityManager->flush();
         }
         return new Response('true');
-
     }
 }

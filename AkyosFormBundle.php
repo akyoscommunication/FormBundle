@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class AkyosFormBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): FormBundleExtension
     {
         return new FormBundleExtension();
     }

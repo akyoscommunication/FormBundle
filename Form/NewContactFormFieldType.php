@@ -5,7 +5,6 @@ namespace Akyos\FormBundle\Form;
 use Akyos\FormBundle\Entity\ContactFormField;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,9 +19,6 @@ class NewContactFormFieldType extends AbstractType
                 'label' => 'Titre du champ',
                 'help' => '( Votre titre )',
             ])
-//            ->add('position', IntegerType::class, [
-//                'label' => 'Position du champ',
-//            ])
             ->add('slug', null, [
                 'label' => 'Slug du champ',
             ])
@@ -35,7 +31,7 @@ class NewContactFormFieldType extends AbstractType
                 'required' => false
             ])
             ->add('type', ChoiceType::class, [
-                'choices' => array(
+                'choices' => [
                     'Texte simple ( HTMl, utiliser le champs options )' => 'html',
                     'Champ Texte' => 'text',
                     'Zone de texte' => 'textarea',
@@ -48,7 +44,7 @@ class NewContactFormFieldType extends AbstractType
                     'Case à cocher' => 'checkbox',
                     'Hidden' => 'hidden',
                     'Fichier' => 'file'
-                ),
+                ],
                 'label' => 'Type du champ',
             ])
             ->add('col', null, [

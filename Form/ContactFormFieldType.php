@@ -20,10 +20,10 @@ use Symfony\Component\Validator\Constraints\File;
 
 class ContactFormFieldType extends AbstractType
 {
-    protected $fields;
-    protected $labels;
-    protected $class;
-    protected $dynamicValues;
+    protected array $fields;
+    protected array $labels;
+    protected string $class;
+    protected array $dynamicValues;
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -49,72 +49,72 @@ class ContactFormFieldType extends AbstractType
 
                 case 'html':
                     $builder
-                        ->add($slug, TextType::class, array(
-                            'attr'              => array(
+                        ->add($slug, TextType::class, [
+                            'attr'              => [
                                 'value'    => $opt,
                                 'row_attr'    => 'col-md-'.$col.' '.$class,
-                            ),
+                            ],
                             'block_prefix' => 'html_text',
-                        ))
+                        ])
                     ;
                     break;
 
                 case 'textarea':
                     $builder
-                        ->add($slug, TextareaType::class, array(
-                            'attr'              => array(
+                        ->add($slug, TextareaType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
-                            ),
+                            ],
                             'required'    => $required,
                             'label'    => $labels,
-                        ))
+                        ])
                     ;
                     break;
 
                 case 'tel':
                     $builder
-                        ->add($slug, TelType::class, array(
-                            'attr'              => array(
+                        ->add($slug, TelType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
-                            ),
+                            ],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
                 case 'mail':
                     $builder
-                        ->add($slug, EmailType::class, array(
-                            'attr'              => array(
+                        ->add($slug, EmailType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
-                            ),
+                            ],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
                 case 'nb':
                     $builder
-                        ->add($slug, IntegerType::class, array(
-                            'attr'              => array(
+                        ->add($slug, IntegerType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
-                            ),
+                            ],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
@@ -128,31 +128,29 @@ class ContactFormFieldType extends AbstractType
                         $fieldOptionsVal = explode(';', $f);
                         if (count($fieldOptionsVal) < 2) {
                             $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                        } else if ($fieldOptionsVal[1] === '') {
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
                         } else {
-                            if ($fieldOptionsVal[1] === '') {
-                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
-                            } else {
-                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
-                            }
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
                         }
                     }
 
                     $builder
-                        ->add($slug, ChoiceType::class, array(
-                            'attr'              => array(
+                        ->add($slug, ChoiceType::class, [
+                            'attr'              => [
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
-                            ),
+                            ],
                             'data' => $value,
                             'choices' => $array,
-                            'choice_value' => function ($value)  {
+                            'choice_value' => function ($value) {
                                 return $value;
                             },
                             'placeholder'       => $opt[0],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
@@ -166,21 +164,19 @@ class ContactFormFieldType extends AbstractType
                         $fieldOptionsVal = explode(';', $f);
                         if (count($fieldOptionsVal) < 2) {
                             $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                        } else if ($fieldOptionsVal[1] === '') {
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
                         } else {
-                            if ($fieldOptionsVal[1] === '') {
-                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
-                            } else {
-                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
-                            }
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
                         }
                     }
 
                     $builder
-                        ->add($slug, ChoiceType::class, array(
-                            'attr'              => array(
+                        ->add($slug, ChoiceType::class, [
+                            'attr'              => [
                                 'row_attr'    => 'col-md-'.$col.' '.$class,
                                 'value'    => $value,
-                            ),
+                            ],
                             'data' => $value,
                             'choices' => $array,
                             'choice_value' => function ($value)  {
@@ -192,7 +188,7 @@ class ContactFormFieldType extends AbstractType
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
@@ -206,12 +202,10 @@ class ContactFormFieldType extends AbstractType
                         $fieldOptionsVal = explode(';', $f);
                         if (count($fieldOptionsVal) < 2) {
                             $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
+                        } else if ($fieldOptionsVal[1] === '') {
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
                         } else {
-                            if ($fieldOptionsVal[1] === '') {
-                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[0];
-                            } else {
-                                $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
-                            }
+                            $array[$fieldOptionsVal[0]] = $fieldOptionsVal[1];
                         }
                     }
                     
@@ -220,12 +214,12 @@ class ContactFormFieldType extends AbstractType
 					}
 
                     $builder
-                        ->add($slug, ChoiceType::class, array(
-                            'attr'              => array(
+                        ->add($slug, ChoiceType::class, [
+                            'attr'              => [
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
                                 'class' => 'form-control js-select2'
-                            ),
+                            ],
                             'data' => (array)$value,
                             'multiple' => true,
                             'choices' => $array,
@@ -236,7 +230,7 @@ class ContactFormFieldType extends AbstractType
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
@@ -244,42 +238,42 @@ class ContactFormFieldType extends AbstractType
                     $labels = $opt ?? $labels;
 
                     $builder
-                        ->add($slug, CheckboxType::class, array(
-                            'attr'              => array(
+                        ->add($slug, CheckboxType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
-                            ),
+                            ],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
                 case 'hidden':
                     $builder
-                        ->add($slug, HiddenType::class, array(
-                            'attr'              => array(
+                        ->add($slug, HiddenType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
-                            ),
+                            ],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
 
                 case 'file':
                     $builder
-                        ->add($slug, FileType::class, array(
-                            'attr'              => array(
+                        ->add($slug, FileType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
-                            ),
+                            ],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
@@ -297,22 +291,22 @@ class ContactFormFieldType extends AbstractType
                                     'mimeTypesMessage' => 'Téléchargez un format valide',
                                 ])
                             ],
-                        ))
+                        ])
                     ;
                     break;
 
                 default:
                     $builder
-                        ->add($slug, TextType::class, array(
-                            'attr'              => array(
+                        ->add($slug, TextType::class, [
+                            'attr'              => [
                                 'placeholder'       => $placeholder,
                                 'row_attr'    => 'col-md-'.$col,
                                 'value'    => $value,
-                            ),
+                            ],
                             'block_prefix' => 'contactform',
                             'label'                 => $labels,
                             'required'              => $required,
-                        ))
+                        ])
                     ;
                     break;
             }

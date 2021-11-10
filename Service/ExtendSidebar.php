@@ -8,8 +8,8 @@ use Symfony\Component\Security\Core\Security;
 
 class ExtendSidebar
 {
-    private $router;
-    private $security;
+    private UrlGeneratorInterface $router;
+    private Security $security;
 
     public function __construct(UrlGeneratorInterface $router, Security $security)
     {
@@ -17,7 +17,7 @@ class ExtendSidebar
         $this->security = $security;
     }
 
-    public function getTemplate($route)
+    public function getTemplate($route): Response
     {
         $template ='';
         if($this->security->isGranted('formulaire-de-contact')){

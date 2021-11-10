@@ -9,7 +9,8 @@ use Twig\TwigFunction;
 
 class ContactFormExtension extends AbstractExtension
 {
-    protected $form;
+    protected ContactFormFieldController $form;
+
     public function __construct(ContactFormFieldController $form)
     {
         $this->form = $form;

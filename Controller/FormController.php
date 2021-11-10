@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/contact-form", name="contact_form_")
@@ -45,12 +44,12 @@ class FormController extends AbstractController
             'title' => 'Formulaire de contact',
             'entity' => 'Form',
             'route' => 'contact_form',
-            'fields' => array(
+            'fields' => [
                 'ID' => 'Id',
                 'Title' => 'Title',
                 'Slug' => 'Slug',
                 'Destinataire' => 'FormTo',
-            ),
+            ],
         ]);
     }
 
@@ -105,7 +104,7 @@ class FormController extends AbstractController
 
         if ($formContactFormField->isSubmitted() && $formContactFormField->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $nbField = count($contactFormFieldRepository->findBy(array('contactForm' => $contactForm->getId())));
+            $nbField = count($contactFormFieldRepository->findBy(['contactForm' => $contactForm->getId()]));
             $contactFormField->setPosition($nbField);
             $entityManager->persist($contactFormField);
             $entityManager->flush();
@@ -149,6 +148,7 @@ class FormController extends AbstractController
     public function changePosition(Request $request, ContactFormFieldRepository $contactFormFieldRepository): JsonResponse
     {
         foreach ($request->get('data') as $position => $field) {
+            /** @var ContactFormField $field */
             $field = $contactFormFieldRepository->find($field);
             $field->setPosition($position);
         }

@@ -4,6 +4,7 @@ namespace Akyos\FormBundle\Controller;
 
 use Akyos\CoreBundle\Repository\CoreOptionsRepository;
 use Akyos\CoreBundle\Services\CoreMailer;
+use Akyos\FormBundle\Entity\ContactForm;
 use Akyos\FormBundle\Entity\ContactFormField;
 use Akyos\FormBundle\Entity\ContactFormSubmission;
 use Akyos\FormBundle\Entity\ContactFormSubmissionValue;
@@ -11,6 +12,7 @@ use Akyos\FormBundle\Form\ContactFormFieldType;
 use Akyos\FormBundle\Form\NewContactFormFieldType;
 use Akyos\FormBundle\Repository\ContactFormRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,12 +26,12 @@ use Symfony\Component\HttpFoundation\UrlHelper;
  */
 class ContactFormFieldController extends AbstractController
 {
-    protected $contactFormRepository;
-    protected $request;
-    protected $mailer;
-    protected $coreOptionsRepository;
-    protected $urlHelper;
-    protected $entityManager;
+    protected ContactFormRepository $contactFormRepository;
+    protected RequestStack $request;
+    protected CoreMailer $mailer;
+    protected CoreOptionsRepository $coreOptionsRepository;
+    protected UrlHelper $urlHelper;
+    protected EntityManagerInterface $entityManager;
 
     public function __construct(
         ContactFormRepository $contactFormRepository,
@@ -86,29 +88,28 @@ class ContactFormFieldController extends AbstractController
             $entityManager->flush();
         }
 
+        /** @var ContactForm $contactForm */
+        $contactForm = $contactFormField->getContactForm();
+
         return $this->redirectToRoute('contact_form_edit', [
-            'id' => $contactFormField->getContactForm()->getId(),
+            'id' => $contactForm->getId(),
         ]);
     }
 
     public function renderContactForm($idForm, $dynamicValues = [], $labels = true, $button_label = 'Envoyer', $object = null, $to = null, $formName = 'contact_form', $template = null, $formTemplate = null): Response
     {
+        /** @var ContactForm $contactform */
         $contactform = $this->contactFormRepository->find($idForm);
 
-        $coreOptions = $this->coreOptionsRepository->findAll();
-        if($coreOptions) {
-            $coreOptions = $coreOptions[0];
-        }
-
-        $form_email = $this->get('form.factory')->createNamedBuilder($formName, ContactFormFieldType::class, null, array(
+        $form_email = $this->get('form.factory')->createNamedBuilder($formName, ContactFormFieldType::class, null, [
             'fields' => $contactform->getContactFormFields(),
             'labels' => $labels,
             'dynamicValues' => $dynamicValues,
-        ))->getForm();
+        ])->getForm();
 
-        $object = ( $object != null ? $object : $contactform->getFormObject() );
-        $to = explode(',', ( $to != null ? $to : $contactform->getFormTo() ));
-        $template = ( $template != null ? $template : ( $contactform->getTemplate() ? 'emails/'.$contactform->getTemplate().'.html.twig' : '@AkyosForm/templates/email/default.html.twig' ) );
+        $object = ($object ?? $contactform->getFormObject());
+        $to = explode(',', ($to ?? $contactform->getFormTo()));
+        $template = ($template ?? ($contactform->getTemplate() ? 'emails/' . $contactform->getTemplate() . '.html.twig' : '@AkyosForm/templates/email/default.html.twig'));
         $form_email->handleRequest($this->request->getCurrentRequest());
 
         if ($form_email->isSubmitted() && $form_email->isValid()) {
@@ -133,22 +134,20 @@ class ContactFormFieldController extends AbstractController
                     }
                 }
 
-                if($field->getType() === "file") {
-                    if($data){
-                        $files[] = $data;
-                        $originalFilename = pathinfo($data->getClientOriginalName(), PATHINFO_FILENAME);
-                        $safeFilename = str_replace(' ', '', trim(htmlspecialchars($originalFilename)));
-                        $newFilename = $safeFilename.'-'.uniqid('', true).'.'.$data->guessExtension();
-                        try {
-                            $data->move(
-                                $this->getParameter('contact_form_files_directory'),
-                                $newFilename
-                            );
-                            $contactFormSubmissionFiles[] = $this->getParameter('contact_form_files_directory').$newFilename;
-                            $contactFormSubmissionValue->setValue($this->getParameter('contact_form_files_directory').$newFilename);
-                        } catch (FileException $e) {
-                            $sendMail = false;
-                        }
+                if($data && $field->getType() === "file") {
+                    $files[] = $data;
+                    $originalFilename = pathinfo($data->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = str_replace(' ', '', trim(htmlspecialchars($originalFilename)));
+                    $newFilename = $safeFilename.'-'.uniqid('', true).'.'.$data->guessExtension();
+                    try {
+                        $data->move(
+                            $this->getParameter('contact_form_files_directory'),
+                            $newFilename
+                        );
+                        $contactFormSubmissionFiles[] = $this->getParameter('contact_form_files_directory').$newFilename;
+                        $contactFormSubmissionValue->setValue($this->getParameter('contact_form_files_directory').$newFilename);
+                    } catch (FileException $e) {
+                        $sendMail = false;
                     }
                 }
 
@@ -164,7 +163,9 @@ class ContactFormFieldController extends AbstractController
                 $this->entityManager->persist($contactFormSubmissionValue);
             }
 
-            $host = $this->request->getCurrentRequest()->getHost();
+            /** @var Request $currentRequest */
+            $currentRequest = $this->request->getCurrentRequest();
+            $host = $currentRequest->getHost();
             $host = explode('.', $host);
             if ((count($host) > 2) && ($host[0] === 'www')) {
                 $host = $host[1].'.'.$host[2];
@@ -183,6 +184,7 @@ class ContactFormFieldController extends AbstractController
             $contactFormSubmission->setBody($body);
             $contactFormSubmission->setFiles($contactFormSubmissionFiles);
 
+            $attachments = null;
             if(!empty($files)){
             	$attachments = [];
                 foreach ($files as $file){
@@ -209,13 +211,13 @@ class ContactFormFieldController extends AbstractController
 								'result' => $result,
 								'form' => $contactform
 							],
-							'attachments' => $attachments ? $attachments : null,
+							'attachments' => $attachments ?: null,
 						]
 					);
                     $this->entityManager->persist($contactFormSubmission);
                     $this->entityManager->flush();
                     $this->addFlash('success', 'Votre message a bien été envoyé.');
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->addFlash('warning', "Une erreur est survenue lors de l'envoi du message, veuillez réessayer plus tard.".$e);
                 }
             } else {
@@ -227,7 +229,7 @@ class ContactFormFieldController extends AbstractController
             $this->addFlash('warning', "Le formulaire n'est pas valide, veuillez vérifier votre saisie et réessayer.");
         }
 
-        $formTemplate = ( $formTemplate != null ? $formTemplate : ( $contactform->getFormTemplate() ? 'forms/'.$contactform->getFormTemplate().'.html.twig' : '@AkyosForm/templates/render.html.twig' ) );
+        $formTemplate = ($formTemplate ?? ($contactform->getFormTemplate() ? 'forms/' . $contactform->getFormTemplate() . '.html.twig' : '@AkyosForm/templates/render.html.twig'));
 
         return $this->render($formTemplate, [
             'button_label' => $button_label,
