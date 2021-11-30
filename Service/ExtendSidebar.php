@@ -23,7 +23,7 @@ class ExtendSidebar
         if($this->security->isGranted('formulaire-de-contact')){
             $template = '<li class="'.(strpos($route,"contact_form") !== false && strpos($route,"contact_form_submission") === false ? "active" : "").'"><a href="'.$this->router->generate('contact_form_index').'">Formulaire de contact</a></li>';
         }
-        if($this->security->isGranted('formulaire-envoyés')){
+        if($this->security->isGranted('formulaires-envoyes')){
             $template .= '<li class="'.(strpos($route,"contact_form_submission") !== false ? "active" : "").'"><a href="'.$this->router->generate('contact_form_submission_index').'">Formulaires envoyés</a></li>';
         }
         return new Response($template);
