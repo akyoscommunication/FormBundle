@@ -1,4 +1,4 @@
-{% extends '@AkyosCore/layout.html.twig' %}
+{% extends '@AkyosCms/layout.html.twig' %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -9,7 +9,7 @@
         {% set hasSearch = true %}
     {% endif %}
 
-    {% include '@AkyosCore/crud/elements/_header.html.twig' with {'title' : title, 'search' : hasSearch, 'button_add' : (button_add is defined ? button_add : true), 'header_route' : header_route is defined ? header_route : null} %}
+    {% include '@AkyosCms/crud/elements/_header.html.twig' with {'title' : title, 'search' : hasSearch, 'button_add' : (button_add is defined ? button_add : true), 'header_route' : header_route is defined ? header_route : null} %}
 
     {# FILTER #}
 
@@ -27,7 +27,7 @@
 
     {# END FILTER #}
 
-    {% include '@AkyosCore/crud/elements/_table.html.twig' %}
+    {% include '@AkyosCms/crud/elements/_table.html.twig' %}
 
 {% endblock %}
 

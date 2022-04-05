@@ -1,4 +1,4 @@
-{% extends '@AkyosCore/layout.html.twig' %}
+{% extends '@AkyosCms/layout.html.twig' %}
 
 {% block title %}Editer vos {{ title }}{% endblock %}
 
@@ -68,11 +68,6 @@
                             </div>
                         </div>
                     </div>
-
-{#                    {{ render(controller(#}
-{#                        'Akyos\\FormBundle\\Controller\\ContactFormFieldController::renderContactForm',#}
-{#                        { 'idForm': el.id }#}
-{#                    )) }}#}
                 </section>
             </div>
             <div class="tab-pane fade" id="mail" role="tabpanel" aria-labelledby="mail-tab">
@@ -81,7 +76,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="options" role="tabpanel" aria-labelledby="options-tab">
-                    {{ include('@AkyosCore/crud/_delete_form.html.twig') }}
+                    {{ include('@AkyosCms/crud/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>
