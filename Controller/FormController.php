@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/admin/contact-form", name="contact_form_")
- * @isGranted("formulaire-de-contact")
+ * @IsGranted("formulaire-de-contact")
  */
 class FormController extends AbstractController
 {

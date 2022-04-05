@@ -2,8 +2,7 @@
 
 namespace Akyos\FormBundle\Controller;
 
-use Akyos\CoreBundle\Repository\CoreOptionsRepository;
-use Akyos\CoreBundle\Services\CoreMailer;
+use Akyos\CoreBundle\Service\CoreMailer;
 use Akyos\FormBundle\Entity\ContactForm;
 use Akyos\FormBundle\Entity\ContactFormField;
 use Akyos\FormBundle\Entity\ContactFormSubmission;
@@ -29,7 +28,6 @@ class ContactFormFieldController extends AbstractController
     protected ContactFormRepository $contactFormRepository;
     protected RequestStack $request;
     protected CoreMailer $mailer;
-    protected CoreOptionsRepository $coreOptionsRepository;
     protected UrlHelper $urlHelper;
     protected EntityManagerInterface $entityManager;
 
@@ -37,7 +35,6 @@ class ContactFormFieldController extends AbstractController
         ContactFormRepository $contactFormRepository,
         RequestStack $request,
         CoreMailer $mailer,
-        CoreOptionsRepository $coreOptionsRepository,
         UrlHelper $urlHelper,
         EntityManagerInterface $entityManager
     )
@@ -45,7 +42,6 @@ class ContactFormFieldController extends AbstractController
         $this->contactFormRepository = $contactFormRepository;
         $this->request = $request;
         $this->mailer = $mailer;
-        $this->coreOptionsRepository = $coreOptionsRepository;
         $this->urlHelper = $urlHelper;
         $this->entityManager = $entityManager;
     }
