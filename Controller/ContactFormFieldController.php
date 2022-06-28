@@ -12,6 +12,7 @@ use Akyos\FormBundle\Form\NewContactFormFieldType;
 use Akyos\FormBundle\Repository\ContactFormRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,6 +31,7 @@ class ContactFormFieldController extends AbstractController
     protected $coreOptionsRepository;
     protected $urlHelper;
     protected $entityManager;
+    protected $containersub;
 
     public function __construct(
         ContactFormRepository $contactFormRepository,
@@ -37,6 +39,7 @@ class ContactFormFieldController extends AbstractController
         CoreMailer $mailer,
         CoreOptionsRepository $coreOptionsRepository,
         UrlHelper $urlHelper,
+        ContainerInterface $containersub,
         EntityManagerInterface $entityManager
     )
     {
@@ -46,6 +49,7 @@ class ContactFormFieldController extends AbstractController
         $this->coreOptionsRepository = $coreOptionsRepository;
         $this->urlHelper = $urlHelper;
         $this->entityManager = $entityManager;
+        $this->containersub = $containersub;
     }
 
     /**
@@ -194,24 +198,50 @@ class ContactFormFieldController extends AbstractController
             }
             if($sendMail) {
                 try {
-					$this->mailer->sendMail(
-						$to,
-						$object,
-						'',
-						$object,
-						$template,
-						null,
-						null,
-						null,
-						null,
-						[
-							'templateParams' => [
-								'result' => $result,
-								'form' => $contactform
-							],
-							'attachments' => $attachments ? $attachments : null,
-						]
-					);
+                    /** Pas le temps donc dégueux */
+                    if (class_exists(\App\Form\HandleMailFormBundle::class) && method_exists(\App\Form\HandleMailFormBundle::class, 'handle')) {
+                        $this->containersub->get('handle.mail.formbundle')->handle(
+                            $to,
+                            $object,
+                            '',
+                            $object,
+                            $template,
+                            null,
+                            null,
+                            null,
+                            null,
+                            [
+                                'templateParams' => [
+                                    'result' => $result,
+                                    'form' => $contactform
+                                ],
+                                'attachments' => $attachments ?? null,
+                            ],
+                            null,
+                            null,
+                            $form_email,
+                            $contactform
+                        );
+                    } else {
+                        $this->mailer->sendMail(
+                            $to,
+                            $object,
+                            '',
+                            $object,
+                            $template,
+                            null,
+                            null,
+                            null,
+                            null,
+                            [
+                                'templateParams' => [
+                                    'result' => $result,
+                                    'form' => $contactform
+                                ],
+                                'attachments' => $attachments ? $attachments : null,
+                            ]
+                        );
+                    }
                     $this->entityManager->persist($contactFormSubmission);
                     $this->entityManager->flush();
                     $this->addFlash('success', 'Votre message a bien été envoyé.');
