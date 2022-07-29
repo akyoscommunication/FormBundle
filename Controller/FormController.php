@@ -8,6 +8,7 @@ use Akyos\FormBundle\Form\ContactFormType;
 use Akyos\FormBundle\Form\NewContactFormFieldType;
 use Akyos\FormBundle\Repository\ContactFormFieldRepository;
 use Akyos\FormBundle\Repository\ContactFormRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,20 +54,20 @@ class FormController extends AbstractController
             ],
         ]);
     }
-
-    /**
-     * @Route("/new", name="new", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     */
-    public function new(Request $request): Response
+	
+	/**
+	 * @Route("/new", name="new", methods={"GET","POST"})
+	 * @param Request $request
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $contactForm = new ContactForm();
         $form = $this->createForm(ContactFormType::class, $contactForm);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($contactForm);
             $entityManager->flush();
 
@@ -80,15 +81,16 @@ class FormController extends AbstractController
             'route' => 'contact_form',
         ]);
     }
-
-    /**
-     * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
-     * @param Request $request
-     * @param ContactForm $contactForm
-     * @param ContactFormFieldRepository $contactFormFieldRepository
-     * @return Response
-     */
-    public function edit(Request $request, ContactForm $contactForm, ContactFormFieldRepository $contactFormFieldRepository): Response
+	
+	/**
+	 * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+	 * @param Request $request
+	 * @param ContactForm $contactForm
+	 * @param ContactFormFieldRepository $contactFormFieldRepository
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+    public function edit(Request $request, ContactForm $contactForm, ContactFormFieldRepository $contactFormFieldRepository, EntityManagerInterface $entityManager): Response
     {
         $contactFormField = new ContactFormField();
         $contactFormField->setContactForm($contactForm);
@@ -98,13 +100,12 @@ class FormController extends AbstractController
         $formContactFormField->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $entityManager->flush();
 
             return $this->redirectToRoute('contact_form_index');
         }
 
         if ($formContactFormField->isSubmitted() && $formContactFormField->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
             $nbField = count($contactFormFieldRepository->findBy(['contactForm' => $contactForm->getId()]));
             $contactFormField->setPosition($nbField);
             $entityManager->persist($contactFormField);
@@ -122,38 +123,39 @@ class FormController extends AbstractController
             'formContactFormField' => $formContactFormField->createView(),
         ]);
     }
-
-    /**
-     * @Route("/{id}", name="delete", methods={"DELETE"})
-     * @param Request $request
-     * @param ContactForm $contactForm
-     * @return Response
-     */
-    public function delete(Request $request, ContactForm $contactForm): Response
+	
+	/**
+	 * @Route("/{id}", name="delete", methods={"DELETE"})
+	 * @param Request $request
+	 * @param ContactForm $contactForm
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+    public function delete(Request $request, ContactForm $contactForm, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$contactForm->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($contactForm);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('contact_form_index');
     }
-
-    /**
-     * @Route("/fields/change-position", methods={"POST"}, options={"expose"=true})
-     * @param Request $request
-     * @param ContactFormFieldRepository $contactFormFieldRepository
-     * @return JsonResponse
-     */
-    public function changePosition(Request $request, ContactFormFieldRepository $contactFormFieldRepository): JsonResponse
+	
+	/**
+	 * @Route("/fields/change-position", methods={"POST"}, options={"expose"=true})
+	 * @param Request $request
+	 * @param ContactFormFieldRepository $contactFormFieldRepository
+	 * @param EntityManagerInterface $entityManager
+	 * @return JsonResponse
+	 */
+    public function changePosition(Request $request, ContactFormFieldRepository $contactFormFieldRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         foreach ($request->get('data') as $position => $field) {
             /** @var ContactFormField $field */
             $field = $contactFormFieldRepository->find($field);
             $field->setPosition($position);
         }
-        $this->getDoctrine()->getManager()->flush();
+        $entityManager->flush();
 
         return new JsonResponse('valid');
     }

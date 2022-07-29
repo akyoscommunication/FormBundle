@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\UrlHelper;
 
+// TODO => Move non routes functions in a service and remove construct
 /**
  * @Route("/admin/contact/form/field", name="contact_form_field_")
  */
@@ -45,20 +46,21 @@ class ContactFormFieldController extends AbstractController
         $this->urlHelper = $urlHelper;
         $this->entityManager = $entityManager;
     }
-
-    /**
-     * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
-     * @param Request $request
-     * @param ContactFormField $contactFormField
-     * @return Response
-     */
-    public function edit(Request $request, ContactFormField $contactFormField): Response
+	
+	/**
+	 * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+	 * @param Request $request
+	 * @param ContactFormField $contactFormField
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+    public function edit(Request $request, ContactFormField $contactFormField, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(NewContactFormFieldType::class, $contactFormField);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $entityManager->flush();
 
             return new Response('valid');
         }
@@ -69,17 +71,17 @@ class ContactFormFieldController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-    /**
-     * @Route("/{id}", name="delete", methods={"DELETE"})
-     * @param Request $request
-     * @param ContactFormField $contactFormField
-     * @return Response
-     */
-    public function delete(Request $request, ContactFormField $contactFormField): Response
+	
+	/**
+	 * @Route("/{id}", name="delete", methods={"DELETE"})
+	 * @param Request $request
+	 * @param ContactFormField $contactFormField
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+    public function delete(Request $request, ContactFormField $contactFormField, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$contactFormField->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($contactFormField);
             $entityManager->flush();
         }

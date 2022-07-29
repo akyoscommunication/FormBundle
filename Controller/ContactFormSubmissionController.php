@@ -8,6 +8,7 @@ use Akyos\FormBundle\Entity\ContactFormSubmission;
 use Akyos\FormBundle\Form\ContactFormSubmissionExportType;
 use Akyos\FormBundle\Form\ContactFormSubmissionType;
 use Akyos\FormBundle\Repository\ContactFormSubmissionRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,9 +28,9 @@ class ContactFormSubmissionController extends AbstractController
      * @param ContactFormSubmissionRepository $contactFormSubmissionRepository
      * @param PaginatorInterface $paginator
      * @param Request $request
-     * @return Response
+     * @return Response|StreamedResponse
      */
-    public function index(ContactFormSubmissionRepository $contactFormSubmissionRepository, PaginatorInterface $paginator, Request $request): Response
+    public function index(ContactFormSubmissionRepository $contactFormSubmissionRepository, PaginatorInterface $paginator, Request $request): Response|StreamedResponse
     {
         $exportForm = $this->createForm(ContactFormSubmissionExportType::class);
 
@@ -66,20 +67,21 @@ class ContactFormSubmissionController extends AbstractController
             'exportForm' => $exportForm->createView()
         ]);
     }
-
-    /**
-     * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
-     * @param Request $request
-     * @param ContactFormSubmission $contactFormSubmission
-     * @return Response
-     */
-    public function edit(Request $request, ContactFormSubmission $contactFormSubmission): Response
+	
+	/**
+	 * @Route("/{id}/edit", name="edit", methods={"GET","POST"})
+	 * @param Request $request
+	 * @param ContactFormSubmission $contactFormSubmission
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+    public function edit(Request $request, ContactFormSubmission $contactFormSubmission, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ContactFormSubmissionType::class, $contactFormSubmission);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $entityManager->flush();
             return $this->redirectToRoute('contact_form_submission_index');
         }
 
@@ -91,17 +93,17 @@ class ContactFormSubmissionController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-    /**
-     * @Route("/{id}", name="delete", methods={"DELETE"})
-     * @param Request $request
-     * @param ContactFormSubmission $contactFormSubmission
-     * @return Response
-     */
-    public function delete(Request $request, ContactFormSubmission $contactFormSubmission): Response
+	
+	/**
+	 * @Route("/{id}", name="delete", methods={"DELETE"})
+	 * @param Request $request
+	 * @param ContactFormSubmission $contactFormSubmission
+	 * @param EntityManagerInterface $entityManager
+	 * @return Response
+	 */
+    public function delete(Request $request, ContactFormSubmission $contactFormSubmission, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$contactFormSubmission->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($contactFormSubmission);
             $entityManager->flush();
         }
