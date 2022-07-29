@@ -1,2 +1,5 @@
 /node_modules/
-#/Resources/public/
+#/public/
+/vendor/
+.idea
+.DS_Store
