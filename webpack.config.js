@@ -34,7 +34,7 @@ let webpackConfig = {
         publicPath: false,
     },
     watchOptions: {
-      poll: true
+        poll: true
     },
     module: {
         rules: [
@@ -55,10 +55,10 @@ let webpackConfig = {
                 use: ExtractTextPlugin.extract({
                     fallback: 'style',
                     use: [
-                        { loader: 'css' },
+                        {loader: 'css'},
                         {
                             loader: 'postcss', options: {
-                                config: { path: __dirname, ctx: config }
+                                config: {path: __dirname, ctx: config}
                             },
                         },
                     ],
@@ -70,14 +70,14 @@ let webpackConfig = {
                 use: ExtractTextPlugin.extract({
                     fallback: 'style',
                     use: [
-                        { loader: 'css', options: { minimize: config.minify } },
+                        {loader: 'css', options: {minimize: config.minify}},
                         {
                             loader: 'postcss', options: {
-                                config: { path: __dirname, ctx: config }
+                                config: {path: __dirname, ctx: config}
                             },
                         },
-                        { loader: 'resolve-url' },
-                        { loader: 'sass' },
+                        {loader: 'resolve-url'},
+                        {loader: 'sass'},
                     ],
                 })
             },

@@ -6,10 +6,11 @@ class FormFields {
         this.changePosition();
         this.ajaxContactFormFieldEdit();
     }
+
     static changePosition() {
         const sort = $("#sortableFormFields");
         sort.sortable({
-            update: function(event, ui) {
+            update: function (event, ui) {
                 let arrayOrderEl = [];
                 $('.contact-form-previsualisation-col').each(function (i) {
                     $(this).find('.position').text(i);
@@ -23,29 +24,31 @@ class FormFields {
                     },
                     success: function (res) {
                         console.log(res, 'success');
-                        if ( res === 'valid'){
-                            new Toast('Changement de position effectué', 'success', 'Succès', 5000 );
+                        if (res === 'valid') {
+                            new Toast('Changement de position effectué', 'success', 'Succès', 5000);
                         } else {
                             // TODO : error
                         }
                     },
-                    error: function(er) {
+                    error: function (er) {
                         console.log(er, 'error');
-                        new Toast('Une erreur s\'est produite lors du changement de position...', 'danger', 'Une erreur s\'est produite...', 5000 );
+                        new Toast('Une erreur s\'est produite lors du changement de position...', 'danger', 'Une erreur s\'est produite...', 5000);
                     }
                 })
             },
         });
     }
+
     static ajaxPosition() {
     }
+
     static ajaxContactFormFieldEdit() {
         $('.btn-modal-contactformfield').click(function (e) {
             e.preventDefault();
             const data = $(this).parents('.contact-form-previsualisation-col').data('id');
             const form = $(this).parents('.contact-form-previsualisation-col').data('form');
 
-            fetch('/admin/contact/form/field/'+data+'/edit')
+            fetch('/admin/contact/form/field/' + data + '/edit')
                 .then(function (res) {
                     return res.text()
                         .then(function (response) {
@@ -61,17 +64,17 @@ class FormFields {
 
                                 $.ajax({
                                     method: 'POST',
-                                    url: '/admin/contact/form/field/'+data+'/edit',
+                                    url: '/admin/contact/form/field/' + data + '/edit',
                                     data: $('#modalEditContactFormField > form[name=new_contact_form_field]').serialize(),
                                     success: function (res) {
                                         // console.log(res, 'success');
-                                        if ( res === 'valid'){
+                                        if (res === 'valid') {
                                             window.location.reload();
                                         } else {
                                             // TODO : error
                                         }
                                     },
-                                    error: function(er) {
+                                    error: function (er) {
                                         console.log(er, 'error');
                                     }
                                 });

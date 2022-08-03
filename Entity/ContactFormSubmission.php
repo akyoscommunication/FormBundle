@@ -8,54 +8,36 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=ContactFormSubmissionRepository::class)
- */
+#[ORM\Entity(repositoryClass: ContactFormSubmissionRepository::class)]
 class ContactFormSubmission
 {
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ContactForm::class, inversedBy="contactFormSubmissions")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: ContactForm::class, inversedBy: 'contactFormSubmissions')]
+    #[ORM\JoinColumn(nullable: false)]
     private $contactForm;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $sentFrom;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $sentTo;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $object;
 
-    /**
-     * @ORM\Column(type="text", length=99999)
-     */
+    #[ORM\Column(type: 'text', length: 99999)]
     private $body;
 
-    /**
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
+    #[ORM\Column(type: 'simple_array', nullable: true)]
     private $files = [];
 
-    /**
-     * @ORM\OneToMany(targetEntity=ContactFormSubmissionValue::class, mappedBy="contactFormSubmission", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: ContactFormSubmissionValue::class, mappedBy: 'contactFormSubmission', orphanRemoval: true)]
     private $contactFormSubmissionValues;
 
     public function __construct()

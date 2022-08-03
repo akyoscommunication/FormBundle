@@ -6,73 +6,51 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Akyos\FormBundle\Entity\ContactForm;
+use Akyos\FormBundle\Repository\ContactFormFieldRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Akyos\FormBundle\Repository\ContactFormFieldRepository")
- */
+#[ORM\Entity(repositoryClass: ContactFormFieldRepository::class)]
 class ContactFormField
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Gedmo\Slug(fields={"title"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $type;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Akyos\FormBundle\Entity\ContactForm", inversedBy="contactFormFields")
-     */
+    #[ORM\ManyToOne(targetEntity: ContactForm::class, inversedBy: 'contactFormFields')]
     private $contactForm;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $position;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $col;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isRequired;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $options;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $className;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $excludeRegex;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ContactFormSubmissionValue::class, mappedBy="contactFormField")
-     */
+    #[ORM\OneToMany(targetEntity: ContactFormSubmissionValue::class, mappedBy: 'contactFormField')]
     private $contactFormSubmissionValues;
 
     public function __construct()

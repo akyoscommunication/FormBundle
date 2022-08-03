@@ -7,10 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 // TODO => est-ce que c'est utilisé quelque part ce truc ?
 class Form extends AbstractController
 {
-	public function getTab(): string
+    public function getTab(): string
     {
         $tab = '<li class="nav-item">';
-            $tab .= '<a class="nav-link" id="builder-tab" data-toggle="tab" href="#builder" role="tab" aria-controls="builder" aria-selected="false">Builder</a>';
+        $tab .= '<a class="nav-link" id="builder-tab" data-toggle="tab" href="#builder" role="tab" aria-controls="builder" aria-selected="false">Builder</a>';
         $tab .= '</li>';
         return $tab;
     }

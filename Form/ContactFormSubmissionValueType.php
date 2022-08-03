@@ -15,20 +15,12 @@ class ContactFormSubmissionValueType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
-
-            $event->getForm()
-                ->add('value', TextType::class, [
-                    'label' => $event->getData()->getContactFormField()->getTitle()
-                ])
-            ;
+            $event->getForm()->add('value', TextType::class, ['label' => $event->getData()->getContactFormField()->getTitle()]);
         });
-
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => ContactFormSubmissionValue::class,
-        ]);
+        $resolver->setDefaults(['data_class' => ContactFormSubmissionValue::class,]);
     }
 }

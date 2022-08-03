@@ -7,64 +7,46 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OrderBy;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Akyos\FormBundle\Entity\ContactFormField;
+use Akyos\FormBundle\Repository\ContactFormRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Akyos\FormBundle\Repository\ContactFormRepository")
- */
+#[ORM\Entity(repositoryClass: ContactFormRepository::class)]
 class ContactForm
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Gedmo\Slug(fields={"title"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    /**
-     * @ORM\Column(type="string", length=99999999999999, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 99999999999999, nullable: true)]
     private $Mail;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Akyos\FormBundle\Entity\ContactFormField", mappedBy="contactForm", orphanRemoval=true)
-     * @OrderBy({"position" = "ASC"})
-     */
+    #[ORM\OneToMany(targetEntity: ContactFormField::class, mappedBy: 'contactForm', orphanRemoval: true)]
+    #[OrderBy(['position' => 'ASC'])]
     private $contactFormFields;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $formTo;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $formObject;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $template;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ContactFormSubmission::class, mappedBy="contactForm")
-     */
+    #[ORM\OneToMany(targetEntity: ContactFormSubmission::class, mappedBy: 'contactForm')]
     private $contactFormSubmissions;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $formTemplate;
 
     public function __construct()

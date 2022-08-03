@@ -14,15 +14,7 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('form_bundle');
 
-        $treeBuilder
-            ->getRootNode()
-                ->children()
-                    ->scalarNode('contact_form_files_directory')
-                        ->defaultValue('contact_form_files/')
-                    ->end()
-                ->end()
-            ->end()
-        ;
+        $treeBuilder->getRootNode()->children()->scalarNode('contact_form_files_directory')->defaultValue('contact_form_files/')->end()->end()->end();
 
         return $treeBuilder;
     }

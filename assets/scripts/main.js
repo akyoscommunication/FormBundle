@@ -7,5 +7,5 @@ class Form {
 }
 
 jQuery(document).ready(function () {
-   Form.init();
+    Form.init();
 });

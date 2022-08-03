@@ -12,20 +12,11 @@ class ContactFormSubmissionExportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('contactForm', EntityType::class, [
-                'label'    => 'Formulaire à exporter',
-                'class'    => ContactForm::class,
-                'choice_label' => 'title',
-            ])
-        ;
+        $builder->add('contactForm', EntityType::class, ['label' => 'Formulaire à exporter', 'class' => ContactForm::class, 'choice_label' => 'title',]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => null,
-            'label' => false,
-        ]);
+        $resolver->setDefaults(['data_class' => null, 'label' => false,]);
     }
 }

@@ -13,28 +13,11 @@ class ContactFormSubmissionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('sentFrom', TextType::class, [
-                'label' => 'Expéditeur'
-            ])
-            ->add('sentTo', TextType::class, [
-                'label' => 'Destinataire'
-            ])
-            ->add('object', TextType::class, [
-                'label' => 'Objet'
-            ])
-            ->add('contactFormSubmissionValues', CollectionType::class, [
-                'label' => 'Informations saisies',
-                'entry_type' => ContactFormSubmissionValueType::class,
-                'by_reference' => false,
-            ])
-        ;
+        $builder->add('sentFrom', TextType::class, ['label' => 'Expéditeur'])->add('sentTo', TextType::class, ['label' => 'Destinataire'])->add('object', TextType::class, ['label' => 'Objet'])->add('contactFormSubmissionValues', CollectionType::class, ['label' => 'Informations saisies', 'entry_type' => ContactFormSubmissionValueType::class, 'by_reference' => false,]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => ContactFormSubmission::class,
-        ]);
+        $resolver->setDefaults(['data_class' => ContactFormSubmission::class,]);
     }
 }

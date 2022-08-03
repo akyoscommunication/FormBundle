@@ -1,4 +1,5 @@
 <?php
+
 namespace Akyos\FormBundle\Service;
 
 use Akyos\CmsBundle\Entity\AdminAccess;
@@ -9,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ExtendAdminAccess
 {
     private AdminAccessRepository $adminAccessRepository;
+
     private EntityManagerInterface $entityManager;
 
     public function __construct(AdminAccessRepository $adminAccessRepository, EntityManagerInterface $entityManager)
@@ -19,26 +21,16 @@ class ExtendAdminAccess
 
     public function setDefaults(): Response
     {
-        if (!$this->adminAccessRepository->findOneBy(['name' => 'Formulaire de contact']))
-        {
+        if (!$this->adminAccessRepository->findOneBy(['name' => 'Formulaire de contact'])) {
             $adminAccess = new AdminAccess();
-            $adminAccess
-                ->setName("Formulaire de contact")
-                ->setRoles([])
-                ->setIsLocked(true)
-            ;
+            $adminAccess->setName("Formulaire de contact")->setRoles([])->setIsLocked(true);
             $this->entityManager->persist($adminAccess);
             $this->entityManager->flush();
         }
 
-        if (!$this->adminAccessRepository->findOneBy(['name' => 'Formulaires envoyés']))
-        {
+        if (!$this->adminAccessRepository->findOneBy(['name' => 'Formulaires envoyés'])) {
             $adminAccess = new AdminAccess();
-            $adminAccess
-                ->setName("Formulaires envoyés")
-                ->setRoles([])
-                ->setIsLocked(true)
-            ;
+            $adminAccess->setName("Formulaires envoyés")->setRoles([])->setIsLocked(true);
             $this->entityManager->persist($adminAccess);
             $this->entityManager->flush();
         }

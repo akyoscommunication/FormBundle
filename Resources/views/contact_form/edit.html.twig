@@ -11,13 +11,16 @@
     <div class="content">
         <ul class="nav nav-tabs" id="tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">Structure des champs</a>
+                <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab"
+                   aria-controls="general" aria-selected="true">Structure des champs</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="options-tab" data-toggle="tab" href="#mail" role="tab" aria-controls="mail" aria-selected="true">Mail</a>
+                <a class="nav-link" id="options-tab" data-toggle="tab" href="#mail" role="tab" aria-controls="mail"
+                   aria-selected="true">Mail</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="options-tab" data-toggle="tab" href="#options" role="tab" aria-controls="options" aria-selected="true">Options</a>
+                <a class="nav-link" id="options-tab" data-toggle="tab" href="#options" role="tab"
+                   aria-controls="options" aria-selected="true">Options</a>
             </li>
         </ul>
 
@@ -26,14 +29,14 @@
                 <section class="pb-5">
                     <h2>Ajouter un champ</h2>
                     {{ form_start(formContactFormField, { 'attr' : { 'class' : 'form-inline not-submit'}}) }}
-                        {{ form_widget(formContactFormField.title, { 'attr' : { 'placeholder' : 'Titre'}}) }}
-                        {{ form_widget(formContactFormField.slug, { 'attr' : { 'placeholder' : 'Slug'}}) }}
-                        {{ form_widget(formContactFormField.options, { 'attr' : { 'placeholder' : 'Options'}}) }}
-                        {{ form_widget(formContactFormField.type, { 'attr' : { 'placeholder' : 'Type'}}) }}
-                        {{ form_widget(formContactFormField.col, { 'attr' : { 'placeholder' : 'Nombre de colonne'}}) }}
-                        {{ form_widget(formContactFormField.isRequired) }}
-                        {{ form_rest(formContactFormField) }}
-                        <button class="btn btn-outline-success">{{ button_label|default('Enregistrer') }}</button>
+                    {{ form_widget(formContactFormField.title, { 'attr' : { 'placeholder' : 'Titre'}}) }}
+                    {{ form_widget(formContactFormField.slug, { 'attr' : { 'placeholder' : 'Slug'}}) }}
+                    {{ form_widget(formContactFormField.options, { 'attr' : { 'placeholder' : 'Options'}}) }}
+                    {{ form_widget(formContactFormField.type, { 'attr' : { 'placeholder' : 'Type'}}) }}
+                    {{ form_widget(formContactFormField.col, { 'attr' : { 'placeholder' : 'Nombre de colonne'}}) }}
+                    {{ form_widget(formContactFormField.isRequired) }}
+                    {{ form_rest(formContactFormField) }}
+                    <button class="btn btn-outline-success">{{ button_label|default('Enregistrer') }}</button>
                     {{ form_end(formContactFormField) }}
                 </section>
                 <section class="pb-5">
@@ -42,11 +45,17 @@
                         {% if el.contactFormFields is not empty %}
                             {% for field in el.contactFormFields %}
                                 <div class="col-md-{{ field.col }} contact-form-previsualisation-sortable">
-                                    <div class="contact-form-previsualisation-col" data-form="{{ el.id }}" data-id="{{ field.id }}">
-                                        <h3 class="contact-form-previsualisation-col__title">{{ field.title }} : <span class="contact-form-previsualisation-col__type">{{ field.type }} ~ col.{{ field.col }}</span></h3>
-                                        <div class="contact-form-previsualisation-col__position">Position : <span class="position">{{ field.position }}</span></div>
-                                        <div class="contact-form-previsualisation-col__slug">Slug : <small class="slug">{{ field.slug }}</small></div>
-                                        <button type="button" class="btn btn-primary btn-modal-contactformfield" data-toggle="modal" data-target="#modal">
+                                    <div class="contact-form-previsualisation-col" data-form="{{ el.id }}"
+                                         data-id="{{ field.id }}">
+                                        <h3 class="contact-form-previsualisation-col__title">{{ field.title }} : <span
+                                                    class="contact-form-previsualisation-col__type">{{ field.type }} ~ col.{{ field.col }}</span>
+                                        </h3>
+                                        <div class="contact-form-previsualisation-col__position">Position : <span
+                                                    class="position">{{ field.position }}</span></div>
+                                        <div class="contact-form-previsualisation-col__slug">Slug : <small
+                                                    class="slug">{{ field.slug }}</small></div>
+                                        <button type="button" class="btn btn-primary btn-modal-contactformfield"
+                                                data-toggle="modal" data-target="#modal">
                                             <i class="fas fa-pencil-alt"></i>
                                         </button>
                                     </div>
@@ -54,7 +63,8 @@
                             {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modallabel" aria-hidden="true">
+                    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modallabel"
+                         aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -76,10 +86,10 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="options" role="tabpanel" aria-labelledby="options-tab">
-                    {{ include('@AkyosCms/crud/_delete_form.html.twig') }}
-                </div>
+                {{ include('@AkyosCms/crud/_delete_form.html.twig') }}
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}
 

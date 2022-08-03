@@ -15,12 +15,14 @@
 
     <section class="form-filter">
         {{ form_start(exportForm, {'attr': {'class' : 'row'}}) }}
-            <div class="col-md-8">{{ form_row(exportForm) }}</div>
-            <div class="col-md-4">
-                <div class="ml-3">
-                    <button type="submit" class="btn btn-effect-ripple btn-xs btn-success"><i class="fas fa-file-download"></i> Télécharger en CSV</button>
-                </div>
+        <div class="col-md-8">{{ form_row(exportForm) }}</div>
+        <div class="col-md-4">
+            <div class="ml-3">
+                <button type="submit" class="btn btn-effect-ripple btn-xs btn-success"><i
+                            class="fas fa-file-download"></i> Télécharger en CSV
+                </button>
             </div>
+        </div>
         {{ form_end(exportForm) }}
 
     </section>

@@ -3,7 +3,9 @@
     <ul class="list-unstyled">
         {% if el.contactFormFields is not empty %}
             {% for field in el.contactFormFields %}
-                <li class="aky-use-field {{ '['~field.slug~']' in form.vars.value.Mail ? '' : 'font-weight-bold' }}">[{{ field.slug }}]</li>
+                <li class="aky-use-field {{ '['~field.slug~']' in form.vars.value.Mail ? '' : 'font-weight-bold' }}">
+                    [{{ field.slug }}]
+                </li>
             {% endfor %}
         {% endif %}
     </ul>

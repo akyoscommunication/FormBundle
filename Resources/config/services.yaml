@@ -12,7 +12,7 @@ services:
 
     Akyos\FormBundle\:
         resource: '../../../../lib/FormBundle/*'
-        tags: ['controller.service_arguments']
+        tags: [ 'controller.service_arguments' ]
         public: true
 
     form.sidebar:

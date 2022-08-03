@@ -6,35 +6,25 @@ use Akyos\FormBundle\Repository\ContactFormSubmissionValueRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=ContactFormSubmissionValueRepository::class)
- */
+#[ORM\Entity(repositoryClass: ContactFormSubmissionValueRepository::class)]
 class ContactFormSubmissionValue
 {
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ContactFormSubmission::class, inversedBy="contactFormSubmissionValues")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: ContactFormSubmission::class, inversedBy: 'contactFormSubmissionValues')]
+    #[ORM\JoinColumn(nullable: false)]
     private $contactFormSubmission;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ContactFormField::class, inversedBy="contactFormSubmissionValues")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: ContactFormField::class, inversedBy: 'contactFormSubmissionValues')]
+    #[ORM\JoinColumn(nullable: false)]
     private $contactFormField;
 
-    /**
-     * @ORM\Column(type="text", length=99999, nullable=true)
-     */
+    #[ORM\Column(type: 'text', length: 99999, nullable: true)]
     private $value;
 
     public function getId(): ?int
