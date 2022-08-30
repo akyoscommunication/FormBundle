@@ -3,7 +3,7 @@
   "description": "AkyosCMS for Symfony - Form",
   "type": "symfony-bundle",
   "require": {
-    "php": "^7.2",
+    "php": ">=7.4",
     "karser/karser-recaptcha3-bundle": "^0.1.0@dev"
   },
   "require-dev": {
