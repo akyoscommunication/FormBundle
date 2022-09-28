@@ -28,7 +28,7 @@ class ContactFormFieldController extends AbstractController
         private readonly RequestStack $request,
         private readonly CoreMailer $mailer,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ContainerInterface $container,
+        private readonly ContainerInterface $containerInterface,
     ) {}
 
     /**
@@ -73,7 +73,7 @@ class ContactFormFieldController extends AbstractController
         /** @var ContactForm $contactform */
         $contactform = $this->contactFormRepository->find($idForm);
 
-        $form_email = $this->container->get('form.factory')->createNamedBuilder($formName, ContactFormFieldType::class, null, ['fields' => $contactform->getContactFormFields(), 'labels' => $labels, 'dynamicValues' => $dynamicValues,])->getForm();
+        $form_email = $this->containerInterface->get('form.factory')->createNamedBuilder($formName, ContactFormFieldType::class, null, ['fields' => $contactform->getContactFormFields(), 'labels' => $labels, 'dynamicValues' => $dynamicValues,])->getForm();
 
         $object = ($object ?? $contactform->getFormObject());
         $to = explode(',', ($to ?? $contactform->getFormTo()));
