@@ -13,34 +13,23 @@ use Akyos\FormBundle\Repository\ContactFormRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/admin/contact/form/field', name: 'contact_form_field_')]
 class ContactFormFieldController extends AbstractController
 {
-    protected ContactFormRepository $contactFormRepository;
-
-    protected RequestStack $request;
-
-    protected CoreMailer $mailer;
-
-    protected UrlHelper $urlHelper;
-
-    protected EntityManagerInterface $entityManager;
-
-    public function __construct(ContactFormRepository $contactFormRepository, RequestStack $request, CoreMailer $mailer, UrlHelper $urlHelper, EntityManagerInterface $entityManager)
-    {
-        $this->contactFormRepository = $contactFormRepository;
-        $this->request = $request;
-        $this->mailer = $mailer;
-        $this->urlHelper = $urlHelper;
-        $this->entityManager = $entityManager;
-    }
+    public function __construct(
+        private readonly ContactFormRepository $contactFormRepository,
+        private readonly RequestStack $request,
+        private readonly CoreMailer $mailer,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ContainerInterface $container,
+    ) {}
 
     /**
      * @param Request $request
@@ -84,7 +73,7 @@ class ContactFormFieldController extends AbstractController
         /** @var ContactForm $contactform */
         $contactform = $this->contactFormRepository->find($idForm);
 
-        $form_email = $this->get('form.factory')->createNamedBuilder($formName, ContactFormFieldType::class, null, ['fields' => $contactform->getContactFormFields(), 'labels' => $labels, 'dynamicValues' => $dynamicValues,])->getForm();
+        $form_email = $this->container->get('form.factory')->createNamedBuilder($formName, ContactFormFieldType::class, null, ['fields' => $contactform->getContactFormFields(), 'labels' => $labels, 'dynamicValues' => $dynamicValues,])->getForm();
 
         $object = ($object ?? $contactform->getFormObject());
         $to = explode(',', ($to ?? $contactform->getFormTo()));
