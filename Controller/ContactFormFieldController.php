@@ -73,7 +73,7 @@ class ContactFormFieldController extends AbstractController
         /** @var ContactForm $contactform */
         $contactform = $this->contactFormRepository->find($idForm);
 
-        $form_email = $this->formFactory->createNamedBuilder($formName, ContactFormFieldType::class, null, ['fields' => $contactform->getContactFormFields(), 'labels' => $labels, 'dynamicValues' => $dynamicValues,])->getForm();
+        $form_email = $this->formFactory->createNamedBuilder($formName, ContactFormFieldType::class, null, ['fields' => $contactform->getContactFormFields()->getValues(), 'labels' => is_array($labels) ? $labels : [$labels], 'dynamicValues' => $dynamicValues,])->getForm();
 
         $object = ($object ?? $contactform->getFormObject());
         $to = explode(',', ($to ?? $contactform->getFormTo()));
