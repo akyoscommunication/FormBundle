@@ -88,13 +88,15 @@ class ContactFormFieldController extends AbstractController
             $contactFormSubmission->setContactForm($contactform);
             $contactFormSubmissionFiles = [];
 
+            $this->entityManager->persist($contactFormSubmission);
+            
             /** @var ContactFormField $field */
             foreach ($contactform->getContactFormFields() as $field) {
                 $data = $form_email->get($field->getSlug())->getData();
                 $contactFormSubmissionValue = new ContactFormSubmissionValue();
-                $contactFormSubmissionValue->setContactFormSubmission($contactFormSubmission);
+                $contactFormSubmission->addContactFormSubmissionValue($contactFormSubmissionValue);
                 $contactFormSubmissionValue->setContactFormField($field);
-
+                
                 if ($field->getExcludeRegex()) {
                     $regex = '/' . $field->getExcludeRegex() . '/';
                     if (preg_match($regex, $data)) {
