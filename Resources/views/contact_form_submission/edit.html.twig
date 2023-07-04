@@ -62,7 +62,7 @@
                         <div class="tab-pane fade {{ app.request.get('tab') == 'postdoc' ? 'show active' : '' }}"
                              id="postdoc" role="tabpanel" aria-labelledby="postdoc-tab">
                             <div class="aky-header-page">
-                                {% include '@AkyosCms/crud/elements/_header.html.twig' with {'title': 'Documents', 'parameters': {'id': el.id}, 'button_add': true, 'header_route' : 'post_document' } %}
+                                {% include '@AkyosCms/crud/elements/_header.html.twig' with {'title': 'Documents', 'parameters': {'id': el.id}, 'button_add': true, 'header_route' : 'blog_post_document' } %}
 
                             </div>
                             <table class="table aky-table">
@@ -93,10 +93,10 @@
                                         </td>
                                         <td>
                                             <a class="btn btn-primary btn-sm"
-                                               href="{{ path('post_document_edit', {'id': doc.id}) }}"><i
+                                               href="{{ path('blog_post_document_edit', {'id': doc.id}) }}"><i
                                                         class="fas fa-pencil-alt"></i></a>
                                             <form method="post" class="not-submit index-delete"
-                                                  action="{{ path('post_document_delete', {'id': doc.id}) }}"
+                                                  action="{{ path('blog_post_document_delete', {'id': doc.id}) }}"
                                                   onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <input type="hidden" name="_token"
