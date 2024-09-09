@@ -86,8 +86,8 @@ class ContactFormFieldType extends AbstractType
                     }
 
                     $builder->add($slug, ChoiceType::class, ['attr' => ['row_attr' => 'col-md-' . $col, 'value' => $value,], 'data' => $value, 'choices' => $array, 'choice_value' => function ($value) {
-                            return $value;
-                        }, 'placeholder' => $opt[0], 'block_prefix' => 'contactform', 'label' => $labels, 'required' => $required,]);
+                        return $value;
+                    }, 'placeholder'                                => $opt[0], 'block_prefix' => 'contactform', 'label' => $labels, 'required' => $required,]);
                     break;
 
                 case 'choice_radio':
@@ -108,8 +108,8 @@ class ContactFormFieldType extends AbstractType
                     }
 
                     $builder->add($slug, ChoiceType::class, ['attr' => ['row_attr' => 'col-md-' . $col . ' ' . $class, 'value' => $value,], 'data' => $value, 'choices' => $array, 'choice_value' => function ($value) {
-                            return $value;
-                        }, 'expanded' => true, 'multiple' => false, 'placeholder' => $opt[0], 'block_prefix' => 'contactform', 'label' => $labels, 'required' => $required,]);
+                        return $value;
+                    }, 'expanded'                                   => true, 'multiple' => false, 'placeholder' => $opt[0], 'block_prefix' => 'contactform', 'label' => $labels, 'required' => $required,]);
                     break;
 
                 case 'multiple_choice':
@@ -133,9 +133,9 @@ class ContactFormFieldType extends AbstractType
                         $value = [$value];
                     }
 
-                    $builder->add($slug, ChoiceType::class, ['attr' => ['row_attr' => 'col-md-' . $col, 'value' => $value, 'class' => 'form-control js-select2'], 'data' => (array)$value, 'multiple' => true, 'choices' => $array, 'choice_value' => function ($value) {
-                            return $value;
-                        }, 'placeholder' => $opt[0], 'block_prefix' => 'contactform', 'label' => $labels, 'required' => $required,]);
+                    $builder->add($slug, ChoiceType::class, ['attr' => ['row_attr' => 'col-md-' . $col, 'class' => 'form-control js-select2'], 'data' => (array)$value, 'multiple' => true, 'choices' => $array, 'choice_value' => function ($value) {
+                        return $value;
+                    }, 'placeholder'                                => $opt[0], 'block_prefix' => 'contactform', 'label' => $labels, 'required' => $required,]);
                     break;
 
                 case 'checkbox':
