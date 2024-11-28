@@ -25,7 +25,7 @@ class ContactForm
     #[ORM\Column(type: 'string', length: 255)]
     private $slug;
 
-    #[ORM\Column(type: 'string', length: 99999999999999, nullable: true)]
+    #[ORM\Column(type: 'string', length: 999999999, nullable: true)]
     private $Mail;
 
     #[ORM\OneToMany(targetEntity: ContactFormField::class, mappedBy: 'contactForm', orphanRemoval: true)]
