@@ -96,7 +96,7 @@ class FormController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    #[Route(path: '/{id}', name: 'delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'delete', methods: ['DELETE', 'POST'])]
     public function delete(Request $request, ContactForm $contactForm, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $contactForm->getId(), $request->request->get('_token'))) {
